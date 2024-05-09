@@ -4,6 +4,7 @@ import com.formdev.flatlaf.FlatDarkLaf;
 import java.awt.Image;
 import java.awt.Color;
 import java.awt.event.KeyEvent;
+import java.io.File;
 
 /**
  *
@@ -17,8 +18,16 @@ public class AutoShutdownGUI extends javax.swing.JFrame {
     private final javax.swing.ImageIcon scaledOffButtonPic;
     private final javax.swing.ImageIcon scaledOffButtonPressedPic;
 
+    private static javax.swing.ImageIcon scaledWarnPic;
+    private static javax.swing.ImageIcon scaledErrorPic;
+    private static javax.swing.ImageIcon scaledInfoPic;
+
     private final Color BACKGROUND = new Color(30, 30, 30);
     private final Color FONT = new Color(73, 79, 91);
+
+    private static final String NORMAL = "NORMAL";
+    private static final String ERROR = "ERROR";
+    private static final String WARNING = "WARNING";
 
     /**
      * Creates new form AutoShutdownGUI
@@ -41,12 +50,27 @@ public class AutoShutdownGUI extends javax.swing.JFrame {
         javax.swing.ImageIcon offButtonPressedPic = new javax.swing.ImageIcon("src/main/resources/off_pressed.png");
         scaledOffButtonPressedPic = new javax.swing.ImageIcon(offButtonPressedPic.getImage().getScaledInstance(btnKillSwitch.getPreferredSize().width, btnKillSwitch.getPreferredSize().height, Image.SCALE_SMOOTH));
 
+        javax.swing.ImageIcon warn = new javax.swing.ImageIcon("src/main/resources/warn.png");
+        scaledWarnPic = new javax.swing.ImageIcon(warn.getImage().getScaledInstance(lblDialogImg.getPreferredSize().width, lblDialogImg.getPreferredSize().height, Image.SCALE_SMOOTH));
+
+        javax.swing.ImageIcon err = new javax.swing.ImageIcon("src/main/resources/error.png");
+        scaledErrorPic = new javax.swing.ImageIcon(err.getImage().getScaledInstance(lblDialogImg.getPreferredSize().width, lblDialogImg.getPreferredSize().height, Image.SCALE_SMOOTH));
+
+        javax.swing.ImageIcon info = new javax.swing.ImageIcon("src/main/resources/info.png");
+        scaledInfoPic = new javax.swing.ImageIcon(info.getImage().getScaledInstance(lblDialogImg.getPreferredSize().width, lblDialogImg.getPreferredSize().height, Image.SCALE_SMOOTH));
+
         btnKillSwitch.setIcon(scaledOnButtonPic);
         btnKillSwitch.setSelectedIcon(scaledOffButtonPic);
 
         cboTimeSelector.getEditor().getEditorComponent().setBackground(BACKGROUND);
         cboTimeSelector.getEditor().getEditorComponent().setForeground(FONT);
 
+        java.awt.Point p = getLocation();
+        p.x += getWidth() / 2 - dlgInsertToken.getWidth() / 2;
+        p.y += getHeight() / 2 - dlgInsertToken.getHeight() / 2;
+        dlgInsertToken.setLocation(p);
+        dlgGeneral.setLocation(p);
+        
     }
 
     /**
@@ -62,6 +86,15 @@ public class AutoShutdownGUI extends javax.swing.JFrame {
         dlgAreaSearch = new javax.swing.JDialog();
         lblAreaSearchBarTitle = new javax.swing.JLabel();
         txfAreaSearchBar = new javax.swing.JTextField();
+        dlgInsertToken = new javax.swing.JDialog();
+        lblEnterTokenTitle = new javax.swing.JLabel();
+        txfEnterTokenField = new javax.swing.JTextField();
+        dlgGeneral = new javax.swing.JDialog();
+        jPanel1 = new javax.swing.JPanel();
+        lblDialogTitle = new javax.swing.JLabel();
+        lblDialogMsg = new javax.swing.JLabel();
+        jPanel2 = new javax.swing.JPanel();
+        lblDialogImg = new javax.swing.JLabel();
         cboTimeSelector = new javax.swing.JComboBox<>();
         pnlEventsPanel = new javax.swing.JPanel();
         lblEventsTitle = new javax.swing.JLabel();
@@ -83,7 +116,6 @@ public class AutoShutdownGUI extends javax.swing.JFrame {
         dlgAreaSearch.setBounds(new java.awt.Rectangle(0, 0, 350, 210));
         dlgAreaSearch.setLocation(new java.awt.Point(0, 0));
         dlgAreaSearch.setModal(true);
-        dlgAreaSearch.setPreferredSize(new java.awt.Dimension(350, 210));
         dlgAreaSearch.setResizable(false);
         dlgAreaSearch.setType(java.awt.Window.Type.POPUP);
         dlgAreaSearch.addComponentListener(new java.awt.event.ComponentAdapter() {
@@ -101,6 +133,7 @@ public class AutoShutdownGUI extends javax.swing.JFrame {
         dlgAreaSearch.getContentPane().add(lblAreaSearchBarTitle, gridBagConstraints);
 
         txfAreaSearchBar.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
+        txfAreaSearchBar.setToolTipText("Press <Enter> to search");
         txfAreaSearchBar.setMinimumSize(new java.awt.Dimension(64, 30));
         txfAreaSearchBar.setPreferredSize(new java.awt.Dimension(140, 25));
         txfAreaSearchBar.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -113,6 +146,114 @@ public class AutoShutdownGUI extends javax.swing.JFrame {
         gridBagConstraints.gridy = 1;
         gridBagConstraints.insets = new java.awt.Insets(4, 0, 26, 0);
         dlgAreaSearch.getContentPane().add(txfAreaSearchBar, gridBagConstraints);
+
+        dlgInsertToken.setTitle("Search For Area");
+        dlgInsertToken.setAlwaysOnTop(true);
+        dlgInsertToken.setBackground(BACKGROUND);
+        dlgInsertToken.setBounds(new java.awt.Rectangle(0, 0, 350, 210));
+        dlgInsertToken.setLocation(new java.awt.Point(0, 0));
+        dlgInsertToken.setModal(true);
+        dlgInsertToken.setResizable(false);
+        dlgInsertToken.setType(java.awt.Window.Type.POPUP);
+        dlgInsertToken.addComponentListener(new java.awt.event.ComponentAdapter() {
+            public void componentHidden(java.awt.event.ComponentEvent evt) {
+                dlgInsertTokenComponentHidden(evt);
+            }
+        });
+        dlgInsertToken.getContentPane().setLayout(new java.awt.GridBagLayout());
+
+        lblEnterTokenTitle.setFont(new java.awt.Font("Dialog", 1, 16)); // NOI18N
+        lblEnterTokenTitle.setText("Insert ESP token");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.weightx = 0.2;
+        gridBagConstraints.insets = new java.awt.Insets(5, 0, 5, 0);
+        dlgInsertToken.getContentPane().add(lblEnterTokenTitle, gridBagConstraints);
+
+        txfEnterTokenField.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
+        txfEnterTokenField.setToolTipText("Press <Enter> to submit");
+        txfEnterTokenField.setMinimumSize(new java.awt.Dimension(64, 30));
+        txfEnterTokenField.setPreferredSize(new java.awt.Dimension(140, 25));
+        txfEnterTokenField.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txfEnterTokenFieldKeyPressed(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.insets = new java.awt.Insets(4, 0, 26, 0);
+        dlgInsertToken.getContentPane().add(txfEnterTokenField, gridBagConstraints);
+
+        dlgInsertToken.getAccessibleContext().setAccessibleName("Enter ESP API Token");
+
+        dlgGeneral.setTitle("Search For Area");
+        dlgGeneral.setAlwaysOnTop(true);
+        dlgGeneral.setBackground(BACKGROUND);
+        dlgGeneral.setBounds(new java.awt.Rectangle(0, 0, 350, 210));
+        dlgGeneral.setLocation(new java.awt.Point(0, 0));
+        dlgGeneral.setMinimumSize(new java.awt.Dimension(400, 300));
+        dlgGeneral.setModal(true);
+        dlgGeneral.setPreferredSize(new java.awt.Dimension(400, 300));
+        dlgGeneral.setResizable(false);
+        dlgGeneral.addComponentListener(new java.awt.event.ComponentAdapter() {
+            public void componentHidden(java.awt.event.ComponentEvent evt) {
+                dlgGeneralComponentHidden(evt);
+            }
+        });
+        dlgGeneral.getContentPane().setLayout(new java.awt.GridBagLayout());
+
+        jPanel1.setMaximumSize(new java.awt.Dimension(400, 2147483647));
+        jPanel1.setMinimumSize(new java.awt.Dimension(400, 42));
+        jPanel1.setName(""); // NOI18N
+        jPanel1.setPreferredSize(new java.awt.Dimension(400, 42));
+        jPanel1.setLayout(new java.awt.GridBagLayout());
+
+        lblDialogTitle.setFont(new java.awt.Font("Dialog", 1, 16)); // NOI18N
+        lblDialogTitle.setText("title");
+        lblDialogTitle.setMaximumSize(new java.awt.Dimension(525, 22));
+        lblDialogTitle.setMinimumSize(new java.awt.Dimension(525, 22));
+        lblDialogTitle.setPreferredSize(new java.awt.Dimension(525, 22));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.weightx = 0.2;
+        gridBagConstraints.insets = new java.awt.Insets(0, 0, 0, 125);
+        jPanel1.add(lblDialogTitle, gridBagConstraints);
+
+        lblDialogMsg.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        lblDialogMsg.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
+        lblDialogMsg.setMaximumSize(new java.awt.Dimension(200000, 20));
+        lblDialogMsg.setMinimumSize(new java.awt.Dimension(200, 20));
+        lblDialogMsg.setPreferredSize(new java.awt.Dimension(20, 20));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.insets = new java.awt.Insets(4, 0, 0, 125);
+        jPanel1.add(lblDialogMsg, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.weightx = 0.1;
+        gridBagConstraints.insets = new java.awt.Insets(0, 8, 9, 0);
+        dlgGeneral.getContentPane().add(jPanel1, gridBagConstraints);
+
+        jPanel2.setLayout(new java.awt.GridBagLayout());
+
+        lblDialogImg.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblDialogImg.setIcon(new javax.swing.ImageIcon(getClass().getResource("/main/resources/background.png"))); // NOI18N
+        lblDialogImg.setMaximumSize(new java.awt.Dimension(50, 50));
+        lblDialogImg.setMinimumSize(new java.awt.Dimension(50, 50));
+        lblDialogImg.setPreferredSize(new java.awt.Dimension(50, 50));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridy = 0;
+        jPanel2.add(lblDialogImg, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.insets = new java.awt.Insets(0, 53, 9, 0);
+        dlgGeneral.getContentPane().add(jPanel2, gridBagConstraints);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Auto Shutdown");
@@ -302,19 +443,24 @@ public class AutoShutdownGUI extends javax.swing.JFrame {
     }//GEN-LAST:event_btnKillSwitchMousePressed
 
     private void txfAreaSearchBarKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txfAreaSearchBarKeyPressed
-        if(evt.getKeyCode()==KeyEvent.VK_ENTER){
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
             String input = txfAreaSearchBar.getText();
-            
+
             System.out.println(input);
-            
-            dlgAreaSearch.setEnabled(false);
+
+            dlgAreaSearch.setVisible(false);
+            txfAreaSearchBar.setText("");
+        } else if (evt.getKeyCode() == KeyEvent.VK_ESCAPE) {
+            dlgAreaSearch.setVisible(false);
+            txfAreaSearchBar.setText("");
         }
+
     }//GEN-LAST:event_txfAreaSearchBarKeyPressed
 
     private void btnAreaSelectorMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnAreaSelectorMouseClicked
         java.awt.Point p = getLocation();
-        p.x += getWidth()/2-dlgAreaSearch.getWidth()/2;
-        p.y += getHeight()/2-dlgAreaSearch.getHeight()/2;
+        p.x += getWidth() / 2 - dlgAreaSearch.getWidth() / 2;
+        p.y += getHeight() / 2 - dlgAreaSearch.getHeight() / 2;
         dlgAreaSearch.setLocation(p);
         dlgAreaSearch.setEnabled(true);
         dlgAreaSearch.setVisible(true);
@@ -322,13 +468,36 @@ public class AutoShutdownGUI extends javax.swing.JFrame {
     }//GEN-LAST:event_btnAreaSelectorMouseClicked
 
     private void dlgAreaSearchComponentHidden(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_dlgAreaSearchComponentHidden
-        // TODO add your handling code here:
+        txfAreaSearchBar.setText("");
     }//GEN-LAST:event_dlgAreaSearchComponentHidden
+
+    private void txfEnterTokenFieldKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txfEnterTokenFieldKeyPressed
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+            String input = txfEnterTokenField.getText();
+
+            JSONManager json = new JSONManager(new File("settings.json"));
+            json.appendFile("token", input);
+
+            dlgInsertToken.setVisible(false);
+            txfEnterTokenField.setText("");
+        } else if (evt.getKeyCode() == KeyEvent.VK_ESCAPE) {
+            dlgInsertToken.setVisible(false);
+            txfEnterTokenField.setText("");
+        }
+    }//GEN-LAST:event_txfEnterTokenFieldKeyPressed
+
+    private void dlgInsertTokenComponentHidden(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_dlgInsertTokenComponentHidden
+        txfEnterTokenField.setText("");
+    }//GEN-LAST:event_dlgInsertTokenComponentHidden
+
+    private void dlgGeneralComponentHidden(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_dlgGeneralComponentHidden
+        // TODO add your handling code here:
+    }//GEN-LAST:event_dlgGeneralComponentHidden
 
     /**
      * @param args the command line arguments
      */
-    public static void main(String args[]) {
+    public static void main(String args[]) throws InterruptedException {
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
          * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
@@ -352,11 +521,43 @@ public class AutoShutdownGUI extends javax.swing.JFrame {
         java.awt.EventQueue.invokeLater(() -> {
             new AutoShutdownGUI().setVisible(true);
         });
+
+        Thread.sleep(250);
+
+        APIManager api = new APIManager();
+        JSONManager jsonSettings = new JSONManager(new File("settings.json"));
+
+        if (api.getToken() == null || api.getToken().isEmpty() || api.getToken().isBlank()) {
+            dlgInsertToken.setVisible(true);
+        }
+
+        int apiStatus = api.getStatus();
         
-        JSONManager testFile = new JSONManager(new String("{\"name\": \"Connor\"}"));
-        testFile.setFile(new java.io.File("test"));
-        testFile.writeFile("name", "boi");
-        
+        showDialog("API Status", "Current ESP API Status", HTTP.get(apiStatus), NORMAL);
+
+    }
+
+    private static void showDialog(String title, String msgTitle, String message, String type) {
+        dlgGeneral.setTitle(title);
+        lblDialogTitle.setText(msgTitle);
+        lblDialogMsg.setText(message);
+
+        switch (type) {
+            case ERROR:
+                lblDialogImg.setIcon(scaledErrorPic);
+                break;
+            case NORMAL:
+                lblDialogImg.setIcon(scaledInfoPic);
+                break;
+            case WARNING:
+                lblDialogImg.setIcon(scaledWarnPic);
+                break;
+            default:
+                lblDialogImg.setIcon(scaledInfoPic);
+                break;
+        }
+
+        dlgGeneral.setVisible(true);
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -364,10 +565,18 @@ public class AutoShutdownGUI extends javax.swing.JFrame {
     private javax.swing.JButton btnKillSwitch;
     private javax.swing.JComboBox<String> cboTimeSelector;
     private javax.swing.JDialog dlgAreaSearch;
+    private static javax.swing.JDialog dlgGeneral;
+    private static javax.swing.JDialog dlgInsertToken;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuBar jMenuBar1;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
     private javax.swing.JLabel lblAreaSearchBarTitle;
+    private static javax.swing.JLabel lblDialogImg;
+    private static javax.swing.JLabel lblDialogMsg;
+    private static javax.swing.JLabel lblDialogTitle;
+    private javax.swing.JLabel lblEnterTokenTitle;
     private javax.swing.JLabel lblEvent1;
     private javax.swing.JLabel lblEvent2;
     private javax.swing.JLabel lblEvent3;
@@ -377,5 +586,6 @@ public class AutoShutdownGUI extends javax.swing.JFrame {
     private javax.swing.JPanel pnlCenterButtons;
     private javax.swing.JPanel pnlEventsPanel;
     private javax.swing.JTextField txfAreaSearchBar;
+    private javax.swing.JTextField txfEnterTokenField;
     // End of variables declaration//GEN-END:variables
 }
