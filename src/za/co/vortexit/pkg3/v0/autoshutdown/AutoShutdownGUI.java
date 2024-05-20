@@ -5,6 +5,8 @@ import java.awt.Image;
 import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.io.File;
+import java.io.IOException;
+import java.util.logging.Level;
 
 /**
  *
@@ -70,7 +72,7 @@ public class AutoShutdownGUI extends javax.swing.JFrame {
         p.y += getHeight() / 2 - dlgInsertToken.getHeight() / 2;
         dlgInsertToken.setLocation(p);
         dlgGeneral.setLocation(p);
-        
+
     }
 
     /**
@@ -93,7 +95,6 @@ public class AutoShutdownGUI extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         lblDialogTitle = new javax.swing.JLabel();
         lblDialogMsg = new javax.swing.JLabel();
-        jPanel2 = new javax.swing.JPanel();
         lblDialogImg = new javax.swing.JLabel();
         cboTimeSelector = new javax.swing.JComboBox<>();
         pnlEventsPanel = new javax.swing.JPanel();
@@ -191,10 +192,10 @@ public class AutoShutdownGUI extends javax.swing.JFrame {
         dlgGeneral.setBackground(BACKGROUND);
         dlgGeneral.setBounds(new java.awt.Rectangle(0, 0, 350, 210));
         dlgGeneral.setLocation(new java.awt.Point(0, 0));
-        dlgGeneral.setMinimumSize(new java.awt.Dimension(400, 300));
         dlgGeneral.setModal(true);
-        dlgGeneral.setPreferredSize(new java.awt.Dimension(400, 300));
+        dlgGeneral.setPreferredSize(new java.awt.Dimension(200, 100));
         dlgGeneral.setResizable(false);
+        dlgGeneral.setType(java.awt.Window.Type.POPUP);
         dlgGeneral.addComponentListener(new java.awt.event.ComponentAdapter() {
             public void componentHidden(java.awt.event.ComponentEvent evt) {
                 dlgGeneralComponentHidden(evt);
@@ -202,58 +203,37 @@ public class AutoShutdownGUI extends javax.swing.JFrame {
         });
         dlgGeneral.getContentPane().setLayout(new java.awt.GridBagLayout());
 
-        jPanel1.setMaximumSize(new java.awt.Dimension(400, 2147483647));
-        jPanel1.setMinimumSize(new java.awt.Dimension(400, 42));
-        jPanel1.setName(""); // NOI18N
-        jPanel1.setPreferredSize(new java.awt.Dimension(400, 42));
         jPanel1.setLayout(new java.awt.GridBagLayout());
 
         lblDialogTitle.setFont(new java.awt.Font("Dialog", 1, 16)); // NOI18N
-        lblDialogTitle.setText("title");
-        lblDialogTitle.setMaximumSize(new java.awt.Dimension(525, 22));
-        lblDialogTitle.setMinimumSize(new java.awt.Dimension(525, 22));
-        lblDialogTitle.setPreferredSize(new java.awt.Dimension(525, 22));
+        lblDialogTitle.setText("Insert ESP token");
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 0;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
         gridBagConstraints.weightx = 0.2;
-        gridBagConstraints.insets = new java.awt.Insets(0, 0, 0, 125);
+        gridBagConstraints.insets = new java.awt.Insets(5, 0, 5, 0);
         jPanel1.add(lblDialogTitle, gridBagConstraints);
 
-        lblDialogMsg.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        lblDialogMsg.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
-        lblDialogMsg.setMaximumSize(new java.awt.Dimension(200000, 20));
-        lblDialogMsg.setMinimumSize(new java.awt.Dimension(200, 20));
-        lblDialogMsg.setPreferredSize(new java.awt.Dimension(20, 20));
+        lblDialogMsg.setText("woobus loobus");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
-        gridBagConstraints.insets = new java.awt.Insets(4, 0, 0, 125);
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
         jPanel1.add(lblDialogMsg, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 0;
-        gridBagConstraints.weightx = 0.1;
-        gridBagConstraints.insets = new java.awt.Insets(0, 8, 9, 0);
+        gridBagConstraints.gridheight = 2;
+        gridBagConstraints.insets = new java.awt.Insets(0, 7, 16, 0);
         dlgGeneral.getContentPane().add(jPanel1, gridBagConstraints);
 
-        jPanel2.setLayout(new java.awt.GridBagLayout());
-
-        lblDialogImg.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        lblDialogImg.setIcon(new javax.swing.ImageIcon(getClass().getResource("/main/resources/background.png"))); // NOI18N
-        lblDialogImg.setMaximumSize(new java.awt.Dimension(50, 50));
-        lblDialogImg.setMinimumSize(new java.awt.Dimension(50, 50));
+        lblDialogImg.setOpaque(true);
         lblDialogImg.setPreferredSize(new java.awt.Dimension(50, 50));
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridy = 0;
-        jPanel2.add(lblDialogImg, gridBagConstraints);
-
-        gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.insets = new java.awt.Insets(0, 53, 9, 0);
-        dlgGeneral.getContentPane().add(jPanel2, gridBagConstraints);
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.insets = new java.awt.Insets(6, 0, 12, 0);
+        dlgGeneral.getContentPane().add(lblDialogImg, gridBagConstraints);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Auto Shutdown");
@@ -263,6 +243,11 @@ public class AutoShutdownGUI extends javax.swing.JFrame {
         setLocation(getLocation());
         setLocationByPlatform(true);
         setResizable(false);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                formWindowClosing(evt);
+            }
+        });
         getContentPane().setLayout(new java.awt.GridBagLayout());
 
         cboTimeSelector.setFont(new java.awt.Font("Dialog", 1, 13)); // NOI18N
@@ -494,10 +479,19 @@ public class AutoShutdownGUI extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_dlgGeneralComponentHidden
 
+    private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
+        try {
+            Logger logger = new Logger();
+            logger.log("Closing");
+        } catch (IOException ex) {
+            java.util.logging.Logger.getLogger(AutoShutdownGUI.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_formWindowClosing
+
     /**
      * @param args the command line arguments
      */
-    public static void main(String args[]) throws InterruptedException {
+    public static void main(String args[]) throws InterruptedException, IOException {
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
          * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
@@ -526,14 +520,19 @@ public class AutoShutdownGUI extends javax.swing.JFrame {
 
         APIManager api = new APIManager();
         JSONManager jsonSettings = new JSONManager(new File("settings.json"));
+        Logger logger = new Logger();
+        logger.log("Starting");
 
-        if (api.getToken() == null || api.getToken().isEmpty() || api.getToken().isBlank()) {
-            dlgInsertToken.setVisible(true);
-        }
+        String token = api.getToken();
 
+        
+            if (token == null || token.isEmpty() || token.isBlank() || api.getStatus() == 403) {
+                dlgInsertToken.setVisible(true);
+            }
+        
         int apiStatus = api.getStatus();
         
-        showDialog("API Status", "Current ESP API Status", HTTP.get(apiStatus), NORMAL);
+        logger.log("Checking API Status  (" + apiStatus + " - " + HTTP.get(apiStatus) + ")");
 
     }
 
@@ -571,7 +570,6 @@ public class AutoShutdownGUI extends javax.swing.JFrame {
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
     private javax.swing.JLabel lblAreaSearchBarTitle;
     private static javax.swing.JLabel lblDialogImg;
     private static javax.swing.JLabel lblDialogMsg;
