@@ -49,19 +49,19 @@ public class JSONManager {
     }
 
     public String getString(String key) {
-        return jsonObject.get(key).asText();
+        return jsonObject.get(key).isNull() ? null : jsonObject.get(key).asText();
     }
     
     public JsonNode get(String key){
-        return jsonObject.get(key);
+        return jsonObject.get(key).isNull() ? null : jsonObject.get(key);
     }
 
     public int getInt(String key) {
-        return jsonObject.get(key).asInt();
+        return jsonObject.get(key).isNull() ? null : jsonObject.get(key).asInt();
     }
 
     public boolean getBool(String key) {
-        return jsonObject.get(key).asBoolean();
+        return jsonObject.get(key).isNull() ? null : jsonObject.get(key).asBoolean();
     }
 
     public void setJsonObject(JsonNode jsonObject) {
@@ -70,12 +70,15 @@ public class JSONManager {
 
     public void setFile(File file) {
         this.file = file;
-        this.jsonObject = toJsonObject(file);
 
     }
 
-    public void setJsonString(String jsonString) {
+    public void setJsonObject(String jsonString) {
         this.jsonObject = toJsonObject(jsonString);
+    }
+    
+    public boolean has(String key){
+        return jsonObject.has(key);
     }
 
     @Override

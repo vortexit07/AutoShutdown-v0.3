@@ -5,6 +5,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import kong.unirest.*;
+import kong.unirest.json.JSONObject;
 
 /**
  *
@@ -32,10 +33,27 @@ public class APIManager {
     }
 
     public int getStatus() {
-        HttpResponse<String> response = Unirest.get("https://developer.sepush.co.za/business/2.0/area?id=jhbcitypower3-7-bruma&test=current")
+        HttpResponse<String> response = Unirest.get("https://developer.sepush.co.za/business/2.0/area?id=eskde-6-onrusoverstrandwesterncape&test=current")
                 .header("Token", TOKEN)
                 .asString();
         return response.getStatus();
+    }
+
+    public String getAreaInfo(String search) throws UnsupportedEncodingException {
+        search = URLEncoder.encode(search, StandardCharsets.UTF_8.toString());
+
+        HttpResponse<String> responseString = Unirest.get(BASE_URL + "areas_search?text=" + search)
+                .header("Token", TOKEN)
+                .asString();
+
+        if (responseString.getStatus() == 200) {
+
+            JSONManager jsonMngr = new JSONManager(responseString.getBody());
+            return jsonMngr.getJsonArray("areas").get(0).asText();
+
+        } else {
+            return String.format("{\"error\": \"%s\"}", responseString.getStatus());
+        }
     }
 
     public String getAreaName(String search) throws UnsupportedEncodingException {

@@ -6,6 +6,7 @@ import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.logging.Level;
 
 /**
@@ -13,66 +14,70 @@ import java.util.logging.Level;
  * @author Connor Lewis
  */
 public class AutoShutdownGUI extends javax.swing.JFrame {
-
+    
     private final javax.swing.ImageIcon scaledOnButtonPic;
     private final javax.swing.ImageIcon scaledOnButtonPressedPic;
-
+    
     private final javax.swing.ImageIcon scaledOffButtonPic;
     private final javax.swing.ImageIcon scaledOffButtonPressedPic;
-
+    
     private static javax.swing.ImageIcon scaledWarnPic;
     private static javax.swing.ImageIcon scaledErrorPic;
     private static javax.swing.ImageIcon scaledInfoPic;
-
+    
     private final Color BACKGROUND = new Color(30, 30, 30);
     private final Color FONT = new Color(73, 79, 91);
-
+    
     private static final String NORMAL = "NORMAL";
     private static final String ERROR = "ERROR";
     private static final String WARNING = "WARNING";
+    
+    private static Logger logger;
 
     /**
      * Creates new form AutoShutdownGUI
      */
-    public AutoShutdownGUI() {
+    public AutoShutdownGUI() throws IOException {
+        logger = new Logger();
         initComponents();
-
+        
         setIconImage(new javax.swing.ImageIcon("src/main/resources/icon.png").getImage().getScaledInstance(500, 500, Image.SCALE_SMOOTH));
         getContentPane().setBackground(BACKGROUND);
-
+        
         javax.swing.ImageIcon onButtonPic = new javax.swing.ImageIcon("src/main/resources/on.png");
         scaledOnButtonPic = new javax.swing.ImageIcon(onButtonPic.getImage().getScaledInstance(btnKillSwitch.getPreferredSize().width, btnKillSwitch.getPreferredSize().height, Image.SCALE_SMOOTH));
-
+        
         javax.swing.ImageIcon offButtonPic = new javax.swing.ImageIcon("src/main/resources/off.png");
         scaledOffButtonPic = new javax.swing.ImageIcon(offButtonPic.getImage().getScaledInstance(btnKillSwitch.getPreferredSize().width, btnKillSwitch.getPreferredSize().height, Image.SCALE_SMOOTH));
-
+        
         javax.swing.ImageIcon onButtonPressedPic = new javax.swing.ImageIcon("src/main/resources/on_pressed.png");
         scaledOnButtonPressedPic = new javax.swing.ImageIcon(onButtonPressedPic.getImage().getScaledInstance(btnKillSwitch.getPreferredSize().width, btnKillSwitch.getPreferredSize().height, Image.SCALE_SMOOTH));
-
+        
         javax.swing.ImageIcon offButtonPressedPic = new javax.swing.ImageIcon("src/main/resources/off_pressed.png");
         scaledOffButtonPressedPic = new javax.swing.ImageIcon(offButtonPressedPic.getImage().getScaledInstance(btnKillSwitch.getPreferredSize().width, btnKillSwitch.getPreferredSize().height, Image.SCALE_SMOOTH));
-
+        
         javax.swing.ImageIcon warn = new javax.swing.ImageIcon("src/main/resources/warn.png");
         scaledWarnPic = new javax.swing.ImageIcon(warn.getImage().getScaledInstance(lblDialogImg.getPreferredSize().width, lblDialogImg.getPreferredSize().height, Image.SCALE_SMOOTH));
-
+        
         javax.swing.ImageIcon err = new javax.swing.ImageIcon("src/main/resources/error.png");
         scaledErrorPic = new javax.swing.ImageIcon(err.getImage().getScaledInstance(lblDialogImg.getPreferredSize().width, lblDialogImg.getPreferredSize().height, Image.SCALE_SMOOTH));
-
+        
         javax.swing.ImageIcon info = new javax.swing.ImageIcon("src/main/resources/info.png");
         scaledInfoPic = new javax.swing.ImageIcon(info.getImage().getScaledInstance(lblDialogImg.getPreferredSize().width, lblDialogImg.getPreferredSize().height, Image.SCALE_SMOOTH));
-
+        
         btnKillSwitch.setIcon(scaledOnButtonPic);
         btnKillSwitch.setSelectedIcon(scaledOffButtonPic);
-
+        
         cboTimeSelector.getEditor().getEditorComponent().setBackground(BACKGROUND);
         cboTimeSelector.getEditor().getEditorComponent().setForeground(FONT);
-
+        
         java.awt.Point p = getLocation();
         p.x += getWidth() / 2 - dlgInsertToken.getWidth() / 2;
         p.y += getHeight() / 2 - dlgInsertToken.getHeight() / 2;
         dlgInsertToken.setLocation(p);
         dlgGeneral.setLocation(p);
-
+        
+        
     }
 
     /**
@@ -107,7 +112,7 @@ public class AutoShutdownGUI extends javax.swing.JFrame {
         pnlCenterButtons = new javax.swing.JPanel();
         btnKillSwitch = new javax.swing.JButton();
         btnAreaSelector = new javax.swing.JButton();
-        jMenuBar1 = new javax.swing.JMenuBar();
+        mnuOptionsBar = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenu2 = new javax.swing.JMenu();
 
@@ -122,6 +127,11 @@ public class AutoShutdownGUI extends javax.swing.JFrame {
         dlgAreaSearch.addComponentListener(new java.awt.event.ComponentAdapter() {
             public void componentHidden(java.awt.event.ComponentEvent evt) {
                 dlgAreaSearchComponentHidden(evt);
+            }
+        });
+        dlgAreaSearch.addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                dlgAreaSearchWindowClosing(evt);
             }
         });
         dlgAreaSearch.getContentPane().setLayout(new java.awt.GridBagLayout());
@@ -193,7 +203,6 @@ public class AutoShutdownGUI extends javax.swing.JFrame {
         dlgGeneral.setBounds(new java.awt.Rectangle(0, 0, 350, 210));
         dlgGeneral.setLocation(new java.awt.Point(0, 0));
         dlgGeneral.setModal(true);
-        dlgGeneral.setPreferredSize(new java.awt.Dimension(200, 100));
         dlgGeneral.setResizable(false);
         dlgGeneral.setType(java.awt.Window.Type.POPUP);
         dlgGeneral.addComponentListener(new java.awt.event.ComponentAdapter() {
@@ -253,12 +262,12 @@ public class AutoShutdownGUI extends javax.swing.JFrame {
         cboTimeSelector.setFont(new java.awt.Font("Dialog", 1, 13)); // NOI18N
         cboTimeSelector.setForeground(new java.awt.Color(153, 153, 153));
         cboTimeSelector.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "1 Minute", "2 Minutes", "3 Minutes", "4 Minutes" }));
-        cboTimeSelector.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
         cboTimeSelector.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        cboTimeSelector.setFocusable(false);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
-        gridBagConstraints.insets = new java.awt.Insets(128, 2, 10, 12);
+        gridBagConstraints.insets = new java.awt.Insets(128, 6, 10, 8);
         getContentPane().add(cboTimeSelector, gridBagConstraints);
 
         pnlEventsPanel.setBackground(BACKGROUND);
@@ -365,7 +374,7 @@ public class AutoShutdownGUI extends javax.swing.JFrame {
         gridBagConstraints.gridy = 0;
         gridBagConstraints.weightx = 3.5;
         gridBagConstraints.weighty = 0.5;
-        gridBagConstraints.insets = new java.awt.Insets(0, 3, 137, 0);
+        gridBagConstraints.insets = new java.awt.Insets(0, 3, 137, 7);
         pnlCenterButtons.add(btnKillSwitch, gridBagConstraints);
 
         btnAreaSelector.setBackground(BACKGROUND);
@@ -389,7 +398,7 @@ public class AutoShutdownGUI extends javax.swing.JFrame {
         gridBagConstraints.gridy = 0;
         gridBagConstraints.weightx = 3.5;
         gridBagConstraints.weighty = 0.5;
-        gridBagConstraints.insets = new java.awt.Insets(232, 63, 231, 55);
+        gridBagConstraints.insets = new java.awt.Insets(232, 61, 231, 62);
         pnlCenterButtons.add(btnAreaSelector, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -399,12 +408,12 @@ public class AutoShutdownGUI extends javax.swing.JFrame {
         getContentPane().add(pnlCenterButtons, gridBagConstraints);
 
         jMenu1.setText("File");
-        jMenuBar1.add(jMenu1);
+        mnuOptionsBar.add(jMenu1);
 
         jMenu2.setText("Edit");
-        jMenuBar1.add(jMenu2);
+        mnuOptionsBar.add(jMenu2);
 
-        setJMenuBar(jMenuBar1);
+        setJMenuBar(mnuOptionsBar);
 
         setSize(new java.awt.Dimension(816, 508));
         setLocationRelativeTo(null);
@@ -416,28 +425,56 @@ public class AutoShutdownGUI extends javax.swing.JFrame {
     }//GEN-LAST:event_btnKillSwitchActionPerformed
 
     private void btnKillSwitchMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnKillSwitchMouseReleased
-
+        
         btnKillSwitch.setIcon(scaledOnButtonPic);
         btnKillSwitch.setSelectedIcon(scaledOffButtonPic);
     }//GEN-LAST:event_btnKillSwitchMouseReleased
 
     private void btnKillSwitchMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnKillSwitchMousePressed
-
+        
         btnKillSwitch.setSelectedIcon(scaledOffButtonPressedPic);
         btnKillSwitch.setIcon(scaledOnButtonPressedPic);
     }//GEN-LAST:event_btnKillSwitchMousePressed
 
     private void txfAreaSearchBarKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txfAreaSearchBarKeyPressed
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
-            String input = txfAreaSearchBar.getText();
-
-            System.out.println(input);
-
-            dlgAreaSearch.setVisible(false);
-            txfAreaSearchBar.setText("");
+            try {
+                String input = txfAreaSearchBar.getText();
+                
+                APIManager api = new APIManager();
+                JSONManager json = new JSONManager();
+                JSONManager jsonFile = new JSONManager(new File("settings.json"));
+                
+                String areaInfo = api.getAreaInfo(input);
+                json.setJsonObject(areaInfo);System.out.println(json.toString());
+                System.out.println(areaInfo);
+                
+                if (!json.has("error")) {
+                    String areaID = json.getJsonArray("areas").get(0).get("id").asText(), areaName = json.getJsonArray("areas").get(0).get("name").asText();
+                    jsonFile.appendFile("areaID", areaID);
+                    jsonFile.appendFile("areaName", areaName);
+                    
+                    btnAreaSelector.setText(areaName);
+                    
+                    logger.log("Setting area name - " + areaName
+                            + "\nSetting area id - " + areaID);
+                } else {
+                    btnAreaSelector.setText(jsonFile.getString("areaName"));
+                    showDialog("An error has occured", "Error " + json.getInt("error"), HTTP.get(json.getInt("error")), ERROR);
+                    logger.log("API Error " + json.getInt("error"));
+                }
+                
+                dlgAreaSearch.setVisible(false);
+                txfAreaSearchBar.setText("");
+            } catch (UnsupportedEncodingException ex) {
+                java.util.logging.Logger.getLogger(AutoShutdownGUI.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IOException ex) {
+                java.util.logging.Logger.getLogger(AutoShutdownGUI.class.getName()).log(Level.SEVERE, null, ex);
+            }
         } else if (evt.getKeyCode() == KeyEvent.VK_ESCAPE) {
             dlgAreaSearch.setVisible(false);
             txfAreaSearchBar.setText("");
+            btnAreaSelector.setText(new JSONManager(new File("settings.json")).getString("areaName"));
         }
 
     }//GEN-LAST:event_txfAreaSearchBarKeyPressed
@@ -446,10 +483,10 @@ public class AutoShutdownGUI extends javax.swing.JFrame {
         java.awt.Point p = getLocation();
         p.x += getWidth() / 2 - dlgAreaSearch.getWidth() / 2;
         p.y += getHeight() / 2 - dlgAreaSearch.getHeight() / 2;
+        btnAreaSelector.setText("loading...");
         dlgAreaSearch.setLocation(p);
         dlgAreaSearch.setEnabled(true);
         dlgAreaSearch.setVisible(true);
-        btnAreaSelector.setText("loading...");
     }//GEN-LAST:event_btnAreaSelectorMouseClicked
 
     private void dlgAreaSearchComponentHidden(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_dlgAreaSearchComponentHidden
@@ -459,10 +496,11 @@ public class AutoShutdownGUI extends javax.swing.JFrame {
     private void txfEnterTokenFieldKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txfEnterTokenFieldKeyPressed
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
             String input = txfEnterTokenField.getText();
-
+            
             JSONManager json = new JSONManager(new File("settings.json"));
             json.appendFile("token", input);
-
+            btnAreaSelector.setText(json.getString("areaName"));
+            
             dlgInsertToken.setVisible(false);
             txfEnterTokenField.setText("");
         } else if (evt.getKeyCode() == KeyEvent.VK_ESCAPE) {
@@ -481,12 +519,15 @@ public class AutoShutdownGUI extends javax.swing.JFrame {
 
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
         try {
-            Logger logger = new Logger();
-            logger.log("Closing");
+            logger.log("Closing\n\n\n");
         } catch (IOException ex) {
             java.util.logging.Logger.getLogger(AutoShutdownGUI.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_formWindowClosing
+
+    private void dlgAreaSearchWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_dlgAreaSearchWindowClosing
+        btnAreaSelector.setText(new JSONManager(new File("settings.json")).getString("areaName"));
+    }//GEN-LAST:event_dlgAreaSearchWindowClosing
 
     /**
      * @param args the command line arguments
@@ -505,7 +546,7 @@ public class AutoShutdownGUI extends javax.swing.JFrame {
 //            }
 
             javax.swing.UIManager.setLookAndFeel(new FlatDarkLaf());
-
+            
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(AutoShutdownGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
@@ -513,34 +554,38 @@ public class AutoShutdownGUI extends javax.swing.JFrame {
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(() -> {
-            new AutoShutdownGUI().setVisible(true);
+            try {
+                new AutoShutdownGUI().setVisible(true);
+            } catch (IOException ex) {
+                java.util.logging.Logger.getLogger(AutoShutdownGUI.class.getName()).log(Level.SEVERE, null, ex);
+            }
         });
-
+        
         Thread.sleep(250);
-
+        
         APIManager api = new APIManager();
         JSONManager jsonSettings = new JSONManager(new File("settings.json"));
-        Logger logger = new Logger();
         logger.log("Starting");
-
-        String token = api.getToken();
-
         
-            if (token == null || token.isEmpty() || token.isBlank() || api.getStatus() == 403) {
-                dlgInsertToken.setVisible(true);
-            }
+        String token = api.getToken();
+        btnAreaSelector.setText(jsonSettings.getString("areaName"));
+        
+        if (token == null || token.isEmpty() || token.isBlank() || api.getStatus() == 403) {
+            dlgInsertToken.setVisible(true);
+        }
         
         int apiStatus = api.getStatus();
+
+//        showDialog("API Status", "API Status", apiStatus + " - " + HTTP.get(apiStatus), WARNING);
+        logger.log("Checking API Status (" + apiStatus + " - " + HTTP.get(apiStatus) + ")");
         
-        logger.log("Checking API Status  (" + apiStatus + " - " + HTTP.get(apiStatus) + ")");
-
     }
-
-    private static void showDialog(String title, String msgTitle, String message, String type) {
+    
+    private static void showDialog(String title, String msgHeading, String message, String type) {
         dlgGeneral.setTitle(title);
-        lblDialogTitle.setText(msgTitle);
+        lblDialogTitle.setText(msgHeading);
         lblDialogMsg.setText(message);
-
+        
         switch (type) {
             case ERROR:
                 lblDialogImg.setIcon(scaledErrorPic);
@@ -555,12 +600,12 @@ public class AutoShutdownGUI extends javax.swing.JFrame {
                 lblDialogImg.setIcon(scaledInfoPic);
                 break;
         }
-
+        
         dlgGeneral.setVisible(true);
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnAreaSelector;
+    private static javax.swing.JButton btnAreaSelector;
     private javax.swing.JButton btnKillSwitch;
     private javax.swing.JComboBox<String> cboTimeSelector;
     private javax.swing.JDialog dlgAreaSearch;
@@ -568,7 +613,6 @@ public class AutoShutdownGUI extends javax.swing.JFrame {
     private static javax.swing.JDialog dlgInsertToken;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
-    private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JLabel lblAreaSearchBarTitle;
     private static javax.swing.JLabel lblDialogImg;
@@ -581,6 +625,7 @@ public class AutoShutdownGUI extends javax.swing.JFrame {
     private javax.swing.JLabel lblEvent4;
     private javax.swing.JLabel lblEvent5;
     private javax.swing.JLabel lblEventsTitle;
+    private javax.swing.JMenuBar mnuOptionsBar;
     private javax.swing.JPanel pnlCenterButtons;
     private javax.swing.JPanel pnlEventsPanel;
     private javax.swing.JTextField txfAreaSearchBar;

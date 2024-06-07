@@ -43,6 +43,8 @@ public class Logger {
 
             }
         });
+        
+        logFile.close();
 
     }
 
