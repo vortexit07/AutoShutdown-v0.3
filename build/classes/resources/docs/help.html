@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Auto Shutdown Help</title>
+    <style>
+      body {
+        background-color: #121212;
+        color: #e0e0e0;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        margin: 0;
+        padding: 0;
+        line-height: 1.6;
+      }
+
+      .container {
+        width: 90%;
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+
+      h1 {
+        text-align: center;
+        color: #4caf50;
+        border-bottom: 2px solid #4caf50;
+        padding-bottom: 10px;
+      }
+
+      h2,
+      h3 {
+        color: #f0a500;
+      }
+
+      p,
+      li {
+        font-size: 1rem;
+        margin: 10px 0;
+      }
+
+      code {
+        background-color: #333333;
+        color: #ffffff;
+        padding: 3px 6px;
+        border-radius: 4px;
+        font-family: "Courier New", Courier, monospace;
+      }
+
+      .highlight-box {
+        border: 2px solid;
+        padding: 5px;
+        margin: 10px 0;
+        border-radius: 8px;
+        font-weight: bold;
+        text-align: center;
+        max-width: 120px;
+      }
+
+      .green-box {
+        border-color: #2e7d32;
+        background-color: #00a703;
+        color: #ffffff;
+      }
+
+      .red-box {
+        border-color: #852721;
+        background-color: #88001b;
+        color: #ffffff;
+      }
+
+      table {
+        width: 100%;
+        margin-top: 20px;
+        border-collapse: collapse;
+      }
+
+      table,
+      th,
+      td {
+        border: 1px solid #4caf50;
+      }
+
+      th,
+      td {
+        padding: 10px;
+        text-align: left;
+      }
+
+      th {
+        background-color: #4caf50;
+        color: #ffffff;
+      }
+
+      td {
+        background-color: #1e1e1e;
+      }
+
+      img {
+        max-width: 100%;
+        height: auto;
+        border: 2px solid #4caf50;
+        border-radius: 8px;
+      }
+
+      a {
+        color: #4caf50;
+        text-decoration: none;
+      }
+
+      h2 {
+        margin-bottom: 3px;
+        margin-top: 30px;
+      }
+
+      h3 {
+        margin-bottom: 0;
+        margin-top: 3px;
+      }
+
+      ol {
+        margin-top: 3;
+      }
+
+      a:hover {
+        text-decoration: underline;
+      }
+
+      .content-grid {
+        display: grid;
+        grid-template-columns: 1fr 1.6fr;
+        gap: 20px;
+        align-items: start;
+      }
+
+      .feature {
+        margin-bottom: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Auto Shutdown Help Documentation</h1>
+
+      <h2>Getting a License Key</h2>
+      <ol>
+        <li>
+          Visit the
+          <a href="https://eskomsepush.gumroad.com/l/api" target="_blank"
+            >EskomSePush API Page</a
+          >.
+        </li>
+        <li>Select the free plan.</li>
+        <li>Complete the subscription (you won't be charged).</li>
+        <li>
+          Copy your license key (format:
+          <code>XXXXXXXX-XXXXXXXX-XXXXXXXX-XXXXXXXX</code>).
+        </li>
+      </ol>
+
+      <h2>Navigating the Interface</h2>
+      <div class="content-grid">
+        <!-- Explanations -->
+        <div>
+          <section class="feature">
+            <h3>1. Power Button</h3>
+            <p>Toggles the functionality of the program:</p>
+            <div class="highlight-box green-box">Green: Enabled</div>
+            <div class="highlight-box red-box">Red: Disabled</div>
+          </section>
+
+          <section class="feature">
+            <h3>2. Area Selection</h3>
+            <p>
+              Shows the current selected area. Click on it to search for a new
+              area.
+            </p>
+          </section>
+
+          <section class="feature">
+            <h3>3. Upcoming Events</h3>
+            <p>
+              Displays the next loadshedding time and updates automatically
+              based on the selected area.
+            </p>
+          </section>
+
+          <section class="feature">
+            <h3>4. Shutdown Timing</h3>
+            <p>
+              Choose how long before loadshedding starts to shut down your
+              system. Select a preset or enter a custom time in minutes.
+            </p>
+          </section>
+
+          <section class="feature">
+            <h3>5. Next Shutdown</h3>
+            <p>
+              Shows the calculated shutdown time based on your timer settings
+              and the upcoming loadshedding event.
+            </p>
+          </section>
+        </div>
+
+        <!-- Image -->
+        <div>
+          <img src="interface.png" alt="Auto Shutdown Interface" />
+        </div>
+      </div>
+
+      <h2>Error Codes</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Error Code</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>403</td>
+            <td>Not Authenticated (Invalid or Disabled Token)</td>
+          </tr>
+          <tr>
+            <td>404</td>
+            <td>Not Found (Area or Event Missing)</td>
+          </tr>
+          <tr>
+            <td>408</td>
+            <td>Request Timeout (Try Again Later)</td>
+          </tr>
+          <tr>
+            <td>429</td>
+            <td>Too Many Requests (API Quota Exceeded)</td>
+          </tr>
+          <tr>
+            <td>5xx</td>
+            <td>Server-side Error (Contact Support)</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2>Need More Help?</h2>
+      <p>
+        If you encounter any issues, visit our
+        <a href="https://www.projects.vortexit.co.za/projects/auto-shutdown" target="_blank">support page</a>.
+      </p>
+    </div>
+  </body>
+</html>

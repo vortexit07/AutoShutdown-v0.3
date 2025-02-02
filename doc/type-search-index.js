@@ -1,0 +1,1 @@
+typeSearchIndex = [{"l":"All Classes and Interfaces","u":"allclasses-index.html"},{"p":"za.co.vortexit.pkg3.v0.autoshutdown","l":"JSONManager"}];updateSearchResults();

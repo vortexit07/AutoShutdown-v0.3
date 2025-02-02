@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launch4jConfig>
+  <dontWrapJar>false</dontWrapJar>
+  <headerType>gui</headerType>
+  <jar>C:\Users\conno\Desktop\Programming Projects\Java\AutoShutdown v0.3\exe\AutoShutdown.jar</jar>
+  <outfile>C:\Users\conno\Desktop\Programming Projects\Java\AutoShutdown v0.3\exe\AutoShutdown.exe</outfile>
+  <errTitle></errTitle>
+  <cmdLine></cmdLine>
+  <chdir>.</chdir>
+  <priority>normal</priority>
+  <downloadUrl></downloadUrl>
+  <supportUrl></supportUrl>
+  <stayAlive>true</stayAlive>
+  <restartOnCrash>true</restartOnCrash>
+  <manifest></manifest>
+  <icon>C:\Users\conno\Downloads\auto-shutdown.ico</icon>
+  <singleInstance>
+    <mutexName>autoshutdown.exe</mutexName>
+    <windowTitle></windowTitle>
+  </singleInstance>
+  <classPath>
+    <mainClass>za.co.vortexit.pkg3.v0.autoshutdown.AutoShutdownGUI</mainClass>
+    <cp>lib/AbsoluteLayout.jar</cp>
+    <cp>lib/unirest-java-4.0.0-RC2.jar</cp>
+    <cp>lib/jackson-annotations-2.17.0.jar</cp>
+    <cp>lib/jackson-core-2.17.0.jar</cp>
+    <cp>lib/jackson-databind-2.17.0.jar</cp>
+    <cp>lib/flatlaf-3.4.1.jar</cp>
+  </classPath>
+  <jre>
+    <path>%JAVA_HOME%;%PATH%</path>
+    <requiresJdk>false</requiresJdk>
+    <requires64Bit>false</requires64Bit>
+    <minVersion></minVersion>
+    <maxVersion></maxVersion>
+  </jre>
+  <versionInfo>
+    <fileVersion>1.0.0.0</fileVersion>
+    <txtFileVersion>1.0</txtFileVersion>
+    <fileDescription>Auto Shutdown ver. 0.3.0</fileDescription>
+    <copyright>Vortex IT Solutions</copyright>
+    <productVersion>0.3.0.0</productVersion>
+    <txtProductVersion>v0.3</txtProductVersion>
+    <productName>Auto Shutdown</productName>
+    <companyName>Vortex IT Solutions</companyName>
+    <internalName>autoshutdown</internalName>
+    <originalFilename>AutoShutdown.exe</originalFilename>
+    <trademarks></trademarks>
+    <language>ENGLISH_US</language>
+  </versionInfo>
+  <messages>
+    <startupErr>An error occurred while starting the application.</startupErr>
+    <jreNotFoundErr>This application requires a Java Runtime Environment.</jreNotFoundErr>
+    <jreVersionErr>This application requires a different version Java Runtime Environment</jreVersionErr>
+    <launcherErr>The registry refers to a nonexistent Java Runtime Environment installation or the runtime is corrupted.</launcherErr>
+    <instanceAlreadyExistsMsg>An application instance is already running.</instanceAlreadyExistsMsg>
+  </messages>
+</launch4jConfig>
