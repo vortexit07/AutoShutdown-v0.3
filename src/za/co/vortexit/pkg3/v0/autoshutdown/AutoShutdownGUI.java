@@ -9,6 +9,7 @@ import java.awt.MenuItem;
 import java.awt.PopupMenu;
 import java.awt.SystemTray;
 import java.awt.TrayIcon;
+import java.awt.TrayIcon.MessageType;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.io.File;
@@ -23,6 +24,8 @@ import java.nio.file.Paths;
 import java.time.Duration;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 
 import javax.swing.ImageIcon;
@@ -59,6 +62,8 @@ public class AutoShutdownGUI extends javax.swing.JFrame {
     private static Logger logger;
 
     private static boolean timesUpdated = false;
+
+    private static TrayIcon trayIcon;
 
     /**
      * Creates new form AutoShutdownGUI
@@ -110,8 +115,8 @@ public class AutoShutdownGUI extends javax.swing.JFrame {
         btnKillSwitch.setIcon(scaledOnButtonPic);
         btnKillSwitch.setSelectedIcon(scaledOffButtonPic);
 
-        cboTimeSelector.getEditor().getEditorComponent().setBackground(BACKGROUND);
-        cboTimeSelector.getEditor().getEditorComponent().setForeground(FONT);
+        cmbTimeSelector.getEditor().getEditorComponent().setBackground(BACKGROUND);
+        cmbTimeSelector.getEditor().getEditorComponent().setForeground(FONT);
 
         java.awt.Point p = getLocation();
 
@@ -163,7 +168,7 @@ public class AutoShutdownGUI extends javax.swing.JFrame {
                     new javax.swing.ImageIcon(getClass().getResource("/resources/images/icon.png")).getImage()
                             .getScaledInstance(16, 16, Image.SCALE_SMOOTH));
 
-            TrayIcon trayIcon = new TrayIcon(icon.getImage(), "Auto Shutdown", popup);
+            trayIcon = new TrayIcon(icon.getImage(), "Auto Shutdown", popup);
             trayIcon.setImageAutoSize(true);
 
             // Add the tray icon to the system tray
@@ -190,15 +195,6 @@ public class AutoShutdownGUI extends javax.swing.JFrame {
      */
     // <editor-fold defaultstate="collapsed" desc="Generated
     // <editor-fold defaultstate="collapsed" desc="Generated
-    // <editor-fold defaultstate="collapsed" desc="Generated
-    // <editor-fold defaultstate="collapsed" desc="Generated
-    // <editor-fold defaultstate="collapsed" desc="Generated
-    // <editor-fold defaultstate="collapsed" desc="Generated
-    // <editor-fold defaultstate="collapsed" desc="Generated
-    // <editor-fold defaultstate="collapsed" desc="Generated
-    // <editor-fold defaultstate="collapsed" desc="Generated
-    // <editor-fold defaultstate="collapsed" desc="Generated
-    // <editor-fold defaultstate="collapsed" desc="Generated
     // Code">//GEN-BEGIN:initComponents
     private void initComponents() {
         java.awt.GridBagConstraints gridBagConstraints;
@@ -210,7 +206,7 @@ public class AutoShutdownGUI extends javax.swing.JFrame {
         lblEnterTokenTitle = new javax.swing.JLabel();
         txfEnterTokenField = new javax.swing.JTextField();
         dlgGeneral = new javax.swing.JDialog();
-        jPanel1 = new javax.swing.JPanel();
+        pnlGeneralDlgText = new javax.swing.JPanel();
         lblDialogTitle = new javax.swing.JLabel();
         lblDialogMsg = new javax.swing.JLabel();
         lblDialogImg = new javax.swing.JLabel();
@@ -229,7 +225,7 @@ public class AutoShutdownGUI extends javax.swing.JFrame {
         dlgInputDialog = new javax.swing.JDialog();
         lblInputHeading = new javax.swing.JLabel();
         txfInputDialog = new javax.swing.JTextField();
-        cboTimeSelector = new javax.swing.JComboBox<>();
+        cmbTimeSelector = new javax.swing.JComboBox<>();
         pnlEventsPanel = new javax.swing.JPanel();
         lblEventsTitle = new javax.swing.JLabel();
         lblEvent1 = new javax.swing.JLabel();
@@ -342,7 +338,7 @@ public class AutoShutdownGUI extends javax.swing.JFrame {
         dlgGeneral.setType(java.awt.Window.Type.POPUP);
         dlgGeneral.getContentPane().setLayout(new java.awt.GridBagLayout());
 
-        jPanel1.setLayout(new java.awt.GridBagLayout());
+        pnlGeneralDlgText.setLayout(new java.awt.GridBagLayout());
 
         lblDialogTitle.setFont(new java.awt.Font("Dialog", 1, 16)); // NOI18N
         lblDialogTitle.setText("Insert ESP token");
@@ -350,21 +346,21 @@ public class AutoShutdownGUI extends javax.swing.JFrame {
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
         gridBagConstraints.weightx = 0.2;
         gridBagConstraints.insets = new java.awt.Insets(5, 0, 5, 0);
-        jPanel1.add(lblDialogTitle, gridBagConstraints);
+        pnlGeneralDlgText.add(lblDialogTitle, gridBagConstraints);
 
         lblDialogMsg.setText("woobus loobus");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
-        jPanel1.add(lblDialogMsg, gridBagConstraints);
+        pnlGeneralDlgText.add(lblDialogMsg, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 0;
         gridBagConstraints.gridheight = 2;
         gridBagConstraints.insets = new java.awt.Insets(0, 7, 16, 0);
-        dlgGeneral.getContentPane().add(jPanel1, gridBagConstraints);
+        dlgGeneral.getContentPane().add(pnlGeneralDlgText, gridBagConstraints);
 
         lblDialogImg.setOpaque(true);
         lblDialogImg.setPreferredSize(new java.awt.Dimension(50, 50));
@@ -574,26 +570,26 @@ public class AutoShutdownGUI extends javax.swing.JFrame {
         });
         getContentPane().setLayout(new java.awt.GridBagLayout());
 
-        cboTimeSelector.setFont(new java.awt.Font("Dialog", 1, 13)); // NOI18N
-        cboTimeSelector.setForeground(new java.awt.Color(153, 153, 153));
-        cboTimeSelector.setModel(new javax.swing.DefaultComboBoxModel<>(
+        cmbTimeSelector.setFont(new java.awt.Font("Dialog", 1, 13)); // NOI18N
+        cmbTimeSelector.setForeground(new java.awt.Color(153, 153, 153));
+        cmbTimeSelector.setModel(new javax.swing.DefaultComboBoxModel<>(
                 new String[] { "1 Minute", "2 Minutes", "4 Minutes", "5 Minutes", "Custom" }));
-        cboTimeSelector.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(80, 82, 84), 1, true));
-        cboTimeSelector.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        cboTimeSelector.setFocusable(false);
-        cboTimeSelector.setMaximumSize(new java.awt.Dimension(108, 24));
-        cboTimeSelector.setMinimumSize(new java.awt.Dimension(108, 24));
-        cboTimeSelector.setPreferredSize(new java.awt.Dimension(108, 24));
-        cboTimeSelector.addActionListener(new java.awt.event.ActionListener() {
+        cmbTimeSelector.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(80, 82, 84), 1, true));
+        cmbTimeSelector.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        cmbTimeSelector.setFocusable(false);
+        cmbTimeSelector.setMaximumSize(new java.awt.Dimension(108, 24));
+        cmbTimeSelector.setMinimumSize(new java.awt.Dimension(108, 24));
+        cmbTimeSelector.setPreferredSize(new java.awt.Dimension(108, 24));
+        cmbTimeSelector.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cboTimeSelectorActionPerformed(evt);
+                cmbTimeSelectorActionPerformed(evt);
             }
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
         gridBagConstraints.insets = new java.awt.Insets(128, 11, 10, 3);
-        getContentPane().add(cboTimeSelector, gridBagConstraints);
+        getContentPane().add(cmbTimeSelector, gridBagConstraints);
 
         pnlEventsPanel.setBackground(BACKGROUND);
         pnlEventsPanel.setLayout(new java.awt.GridBagLayout());
@@ -783,86 +779,117 @@ public class AutoShutdownGUI extends javax.swing.JFrame {
         dlgSettingsMenu.setVisible(true);
     }// GEN-LAST:event_mnuSettingsMouseClicked
 
-    private void cboTimeSelectorActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_cboTimeSelectorActionPerformed
+    private void cmbTimeSelectorActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_cmbTimeSelectorActionPerformed
         JSONManager settingsJson = new JSONManager(new File("settings.json"));
-        int selectedIndex = cboTimeSelector.getSelectedIndex();
-        int lastInList = cboTimeSelector.getItemCount() - 1;
+        int selectedIndex = cmbTimeSelector.getSelectedIndex();
+        int lastInList = cmbTimeSelector.getItemCount() - 1;
 
-        if (selectedIndex == 0) {
-            settingsJson.appendFile("timeBefore", 1);
-            timeBefore = 1;
-            timesUpdated = true;
-            if (cboTimeSelector.getItemCount() == 6) {
-                cboTimeSelector.removeItemAt(4);
+        // Handle custom time input
+        if (selectedIndex == lastInList) {
+            if (cmbTimeSelector.getItemCount() == 6) {
+                cmbTimeSelector.removeItemAt(4);
             }
-        } else if (selectedIndex == 1) {
-            settingsJson.appendFile("timeBefore", 2);
-            timeBefore = 2;
-            timesUpdated = true;
-            if (cboTimeSelector.getItemCount() == 6) {
-                cboTimeSelector.removeItemAt(4);
-            }
-        } else if (selectedIndex == 2) {
-            settingsJson.appendFile("timeBefore", 4);
-            timeBefore = 4;
-            timesUpdated = true;
-            if (cboTimeSelector.getItemCount() == 6) {
-                cboTimeSelector.removeItemAt(4);
-            }
-        } else if (selectedIndex == 3) {
-            settingsJson.appendFile("timeBefore", 5);
-            timeBefore = 5;
-            timesUpdated = true;
-            if (cboTimeSelector.getItemCount() == 6) {
-                cboTimeSelector.removeItemAt(4);
-            }
-        } else if (selectedIndex == 4 && selectedIndex != lastInList) {
-            settingsJson.appendFile("timeBefore", parseMinutes(cboTimeSelector.getSelectedItem().toString()));
-            timeBefore = parseMinutes(cboTimeSelector.getSelectedItem().toString());
-            timesUpdated = true;
 
-        } else if (selectedIndex == lastInList) {
-            if (cboTimeSelector.getItemCount() == 6) {
-                cboTimeSelector.removeItemAt(4);
-            }
             while (true) {
                 String input = showInputDialog("Enter time (minutes)");
                 if (input.isBlank()) {
-                    int timeBefore = settingsJson.getInt("timeBefore");
-                    switch (timeBefore) {
-                        case 1, 2 ->
-                            cboTimeSelector.setSelectedIndex(timeBefore - 1);
-                        case 4, 5 ->
-                            cboTimeSelector.setSelectedIndex(timeBefore - 2);
-                        default -> {
-                            cboTimeSelector.insertItemAt(timeBefore + " minutes", 4);
-                            cboTimeSelector.setSelectedIndex(4);
-                        }
-
-                    }
+                    restorePreviousTime(settingsJson);
                     break;
                 } else if (org.apache.commons.lang3.StringUtils.isNumeric(input)) {
                     int inputtedInt = Integer.parseInt(input);
-                    settingsJson.appendFile("timeBefore", inputtedInt);
+                    updateTimeBefore(settingsJson, inputtedInt);
+
+                    // Insert new option if not standard
                     switch (inputtedInt) {
-                        case 1, 2 ->
-                            cboTimeSelector.setSelectedIndex(inputtedInt - 1);
-                        case 4, 5 ->
-                            cboTimeSelector.setSelectedIndex(inputtedInt - 2);
+                        case 1, 2 -> cmbTimeSelector.setSelectedIndex(inputtedInt - 1);
+                        case 4, 5 -> cmbTimeSelector.setSelectedIndex(inputtedInt - 2);
                         default -> {
-                            cboTimeSelector.insertItemAt(inputtedInt + " minutes", 4);
-                            cboTimeSelector.setSelectedIndex(4);
+                            cmbTimeSelector.insertItemAt(inputtedInt + " minutes", 4);
+                            cmbTimeSelector.setSelectedIndex(4);
                         }
                     }
-
+                    updateCountdownLabel();
                     break;
                 } else {
                     showDialog("Error", "Invalid Integer", "The value you entered is invalid", MSG_ERR);
                 }
             }
+            return;
         }
 
-    }// GEN-LAST:event_cboTimeSelectorActionPerformed
+        // Handle predefined times
+        int[] predefinedTimes = { 1, 2, 4, 5 };
+        if (selectedIndex >= 0 && selectedIndex < predefinedTimes.length) {
+            updateTimeBefore(settingsJson, predefinedTimes[selectedIndex]);
+
+            if (cmbTimeSelector.getItemCount() == 6) {
+                cmbTimeSelector.removeItemAt(4);
+            }
+            updateCountdownLabel();
+            return;
+        }
+
+        // Handle custom entry still in dropdown
+        if (selectedIndex == 4) {
+            int parsed = parseMinutes(cmbTimeSelector.getSelectedItem().toString());
+            updateTimeBefore(settingsJson, parsed);
+            updateCountdownLabel();
+        }
+
+    }// GEN-LAST:event_cmbTimeSelectorActionPerformed
+
+    private void updateTimeBefore(JSONManager settingsJson, int newTime) {
+        settingsJson.appendFile("timeBefore", newTime);
+        timeBefore = newTime;
+        timesUpdated = true;
+    }
+
+    private void updateCountdownLabel() {
+        LocalTime next = getNextEventFromSettings();
+        if (next != null) {
+            lblCountdown.setText("Next: " + next.minusMinutes(timeBefore));
+        } else {
+            lblCountdown.setText("");
+        }
+    }
+
+    private void restorePreviousTime(JSONManager settingsJson) {
+        int previous = settingsJson.getInt("timeBefore");
+        switch (previous) {
+            case 1, 2 -> cmbTimeSelector.setSelectedIndex(previous - 1);
+            case 4, 5 -> cmbTimeSelector.setSelectedIndex(previous - 2);
+            default -> {
+                cmbTimeSelector.insertItemAt(previous + " minutes", 4);
+                cmbTimeSelector.setSelectedIndex(4);
+            }
+        }
+        timeBefore = previous;
+        updateCountdownLabel();
+    }
+
+    private static LocalTime getNextEventFromSettings() {
+        JSONManager settingsFile = new JSONManager(new File("settings.json"));
+        LocalTime time1, time2, time3, time4, startTime, endTime;
+        time1 = settingsFile.getTime("time1");
+        time2 = settingsFile.getTime("time2");
+        time3 = settingsFile.getTime("time3");
+        time4 = settingsFile.getTime("time4");
+        startTime = settingsFile.getTime("startTime");
+        endTime = settingsFile.getTime("endTime");
+        if (time1 != null && (time1.isAfter(startTime) && time1.isBefore(endTime))) {
+            return time1;
+        } else if (time2 != null && (time2.isAfter(startTime) && time2.isBefore(endTime))) {
+            return time2;
+        } else if (time3 != null && (time1.isAfter(startTime) && time1.isBefore(endTime))) {
+            return time3;
+        } else if (time4 != null && (time1.isAfter(startTime) && time1.isBefore(endTime))) {
+            return time4;
+        } else if (settingsFile.getBool("atMidnight")) {
+            return LocalTime.parse("00:00");
+        } else
+            return null;
+
+    }
 
     private static int parseMinutes(String timeString) {
         Pattern pattern = Pattern.compile("(\\d+)");
@@ -975,11 +1002,11 @@ public class AutoShutdownGUI extends javax.swing.JFrame {
 
         // Program Inactive
         if (btnKillSwitch.isSelected()) {
-            lblCountdown.setText("");
+            lblCountdown.setVisible(false);
             lastOn = LocalTime.now();
         } // Program Active
         else {
-            lblCountdown.setText("Next: ");
+            lblCountdown.setVisible(true);
             if (Duration.between(lastOn, LocalTime.now()).toHours() > 1) {
                 try {
                     getScheduleAndUpdateGUI();
@@ -1115,20 +1142,7 @@ public class AutoShutdownGUI extends javax.swing.JFrame {
     public static void main(String args[]) throws InterruptedException, IOException {
         // <editor-fold defaultstate="collapsed" desc=" Look and feel setting code
         // (optional) ">
-        /*
-         * If Nimbus (introduced in Java SE 6) is not available, stay with the default
-         * look and feel.
-         * For details see
-         * http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html
-         */
         try {
-            // for (javax.swing.UIManager.LookAndFeelInfo info :
-            // javax.swing.UIManager.getInstalledLookAndFeels()) {
-            // if ("Windows".equals(info.getName())) {
-            // javax.swing.UIManager.setLookAndFeel(info.getClassName());
-            // break;
-            // }
-            // }
 
             javax.swing.UIManager.setLookAndFeel(new FlatDarkLaf());
 
@@ -1154,6 +1168,8 @@ public class AutoShutdownGUI extends javax.swing.JFrame {
         File settingsFile = new File("settings.json");
         boolean tokenValid = false;
 
+        os = getOS();
+
         // Check if settings file exists, create one if not
         if (settingsFile.length() != 0) {
             settingsJson = new JSONManager(settingsFile);
@@ -1165,12 +1181,12 @@ public class AutoShutdownGUI extends javax.swing.JFrame {
         timeBefore = settingsJson.getInt("timeBefore");
         switch (timeBefore) {
             case 1, 2 ->
-                cboTimeSelector.setSelectedIndex(timeBefore - 1);
+                cmbTimeSelector.setSelectedIndex(timeBefore - 1);
             case 4, 5 ->
-                cboTimeSelector.setSelectedIndex(timeBefore - 2);
+                cmbTimeSelector.setSelectedIndex(timeBefore - 2);
             default -> {
-                cboTimeSelector.insertItemAt(timeBefore + " minutes", 4);
-                cboTimeSelector.setSelectedIndex(4);
+                cmbTimeSelector.insertItemAt(timeBefore + " minutes", 4);
+                cmbTimeSelector.setSelectedIndex(4);
             }
 
         }
@@ -1202,7 +1218,6 @@ public class AutoShutdownGUI extends javax.swing.JFrame {
             tokenValid = true;
         }
 
-        @SuppressWarnings("UnusedAssignment")
         String token = api.getToken();
         boolean tokenEntered = false;
         if (!tokenValid) {
@@ -1266,18 +1281,6 @@ public class AutoShutdownGUI extends javax.swing.JFrame {
                             ? settingsJson.getTime("time4").minusMinutes(timeBefore)
                             : null;
                     timesUpdated = false;
-                }
-
-                if (time4 != null) {
-                    lblCountdown.setText("Next: " + time1);
-                } else if (time3 != null) {
-                    lblCountdown.setText("Next: " + time2);
-                } else if (time2 != null) {
-                    lblCountdown.setText("Next: " + time3);
-                } else if (time1 != null) {
-                    lblCountdown.setText("Next: " + time4);
-                } else {
-                    lblCountdown.setText("");
                 }
 
                 runScheduleUpdater();
@@ -1355,52 +1358,87 @@ public class AutoShutdownGUI extends javax.swing.JFrame {
      */
     private static void validateShutdownConditions(LocalTime t1, LocalTime t2, LocalTime t3, LocalTime t4,
             boolean atMid) {
-        // Parse the current time to match "HH:mm" format.
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
-        LocalTime now = LocalTime.parse(LocalTime.now().toString().substring(0, 5), formatter);
+        // Get current time with second-level precision
+        LocalTime now = LocalTime.now();
 
-        // Calculate the time just before midnight, accounting for the buffer.
-        LocalTime midnight = LocalTime.parse("23:59").minusMinutes(timeBefore);
+        // Midnight adjusted with buffer
+        LocalTime midnight = LocalTime.of(23, 59).minusMinutes(timeBefore).plusMinutes(1);
 
-        // Check if any shutdown times or the midnight condition are met.
+        // Update schedule at 00:00 and 05:00 sharp
+        if (now.getHour() == 0 && now.getMinute() == 0 && now.getSecond() == 0
+                || now.getHour() == 5 && now.getMinute() == 0 && now.getSecond() == 0) {
+            try {
+                getScheduleAndUpdateGUI();
+            } catch (JsonProcessingException | HttpTimeoutException | InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
         if (t1 != null || t2 != null || t3 != null || t4 != null || atMid) {
 
-            // Update the shutdown schedule a minute before a scheduled shutdown
-            if ((t1 != null && now == t1.minusMinutes(1)) || (t2 != null && now == t2.minusMinutes(1))
-                    || (t3 != null && now == t3.minusMinutes(1)) || (t4 != null && now == t4.minusMinutes(1))
-                    || (atMid && now == midnight.minusMinutes(1))) {
-                try {
-                    getScheduleAndUpdateGUI();
-                } catch (JsonProcessingException | HttpTimeoutException | InterruptedException e) {
-                    try {
-                        logger.log(e);
-                        e.printStackTrace();
-                    } catch (IOException e1) {
-                    }
-                }
-                // Check if the current time macthes a scheduled shutdown time
-            } else if ((t1 != null && now == t1) || (t2 != null && now == t2)
-                    || (t3 != null && now == t3) || (t4 != null && now == t4)
-                    || (atMid && now == midnight)) {
+            // Combine all shutdown times into a list for easier handling
+            List<LocalTime> shutdownTimes = new ArrayList<>();
+            if (t1 != null)
+                shutdownTimes.add(t1);
+            if (t2 != null)
+                shutdownTimes.add(t2);
+            if (t3 != null)
+                shutdownTimes.add(t3);
+            if (t4 != null)
+                shutdownTimes.add(t4);
+            if (atMid)
+                shutdownTimes.add(midnight);
 
-                // Execute OS-specific shutdown logic.
-                switch (os) {
-                    case 1: // Windows shutdown
+            for (LocalTime shutdownTime : shutdownTimes) {
+                Duration untilShutdown = Duration.between(now, shutdownTime);
+                long secondsUntil = untilShutdown.getSeconds();
+
+                if (secondsUntil == 300) { // 5 minutes
+                    trayIcon.displayMessage("Auto Shutdown", "Shutting down in 5 minutes", MessageType.INFO);
+                    try {
+                        Thread.sleep(62000); // Allow minute to elapse
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+
+                } else if (secondsUntil == 60) {
+                    try {
+                        getScheduleAndUpdateGUI(); // re-confirm 1 minute before
+                    } catch (JsonProcessingException | HttpTimeoutException | InterruptedException e) {
                         try {
-                            logger.log("Shutting down");
-                            shutdownWindows();
-                        } catch (IOException | InterruptedException e) {
+                            logger.log(e);
                             e.printStackTrace();
+                        } catch (IOException ex) {
+                            ex.printStackTrace();
                         }
-                        break;
-                    case 2: // Unix/Linux shutdown
-                        try {
-                            logger.log("Shutting down");
-                            shutdownUnix();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                        break;
+                    }
+
+                } else if (secondsUntil <= 30 && secondsUntil >= 0) {
+                    trayIcon.displayMessage("Auto Shutdown", "Shutting down in 30 seconds", MessageType.INFO);
+                    try {
+                        Thread.sleep(30000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+
+                    try {
+                        logger.log("Shutting down");
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+                    switch (os) {
+                        case 1: // Windows
+                            // shutdownWindows();
+                            break;
+                        case 2: // Linux/Unix
+                            try {
+                                shutdownUnix();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                            break;
+                    }
                 }
             }
         }
@@ -1414,8 +1452,8 @@ public class AutoShutdownGUI extends javax.swing.JFrame {
      */
     private static void shutdownWindows() throws IOException, InterruptedException {
         ProcessBuilder builder = new ProcessBuilder("shutdown", "-s", "-t", "0");
-        logger.log("Shutting down");
-        builder.start().waitFor();
+        System.out.println("Shutting down");
+        builder.start();
     }
 
     /**
@@ -1534,14 +1572,10 @@ public class AutoShutdownGUI extends javax.swing.JFrame {
                                 ? time4
                                 : null;
 
-                if (atMidnight
-                        && (endTime.equals(LocalTime.parse("23:59")) || LocalTime.parse("23:59").isAfter(endTime))) {
-                    atMidnight = false;
-                }
-
                 lblEventsTitle.setText("Upcoming Events (Stage " + stage + "):");
                 if (time1 != null) {
                     lblEvent1.setText(time1.toString());
+                    lblCountdown.setText("Next: " + time1.minusMinutes(timeBefore));
                 } else {
                     lblEvent1.setText("");
                 }
@@ -1564,17 +1598,25 @@ public class AutoShutdownGUI extends javax.swing.JFrame {
                     lblEvent4.setText("");
                 }
 
+                LocalTime midnight = LocalTime.MIDNIGHT.minusMinutes(1);
+                midnight = midnight.minusMinutes(timeBefore).plusMinutes(1);
+
                 if (atMidnight) {
                     if (lblEvent1.getText().isEmpty()) {
                         lblEvent1.setText("00:00");
+                        lblCountdown.setText("Next: " + midnight);
                     } else if (lblEvent2.getText().isEmpty()) {
                         lblEvent2.setText("00:00");
+                        lblCountdown.setText("Next: " + midnight);
                     } else if (lblEvent3.getText().isEmpty()) {
                         lblEvent3.setText("00:00");
+                        lblCountdown.setText("Next: " + midnight);
                     } else if (lblEvent4.getText().isEmpty()) {
                         lblEvent4.setText("00:00");
+                        lblCountdown.setText("Next: " + midnight);
                     } else {
                         lblEvent5.setText("00:00");
+                        lblCountdown.setText("Next: " + midnight);
                     }
 
                 } else {
@@ -1597,6 +1639,17 @@ public class AutoShutdownGUI extends javax.swing.JFrame {
                 settingsJson.appendFile("atMidnight", atMidnight);
 
             } else {
+
+                JSONManager settingsJson = new JSONManager(new File("settings.json"));
+                settingsJson.appendFile("time1", "");
+                settingsJson.appendFile("time2", "");
+                settingsJson.appendFile("time3", "");
+                settingsJson.appendFile("time4", "");
+                settingsJson.appendFile("stage", 0);
+                settingsJson.appendFile("startTime", null);
+                settingsJson.appendFile("endTime", null);
+                settingsJson.appendFile("atMidnight", false);
+
                 lblEventsTitle.setMinimumSize(new Dimension(213, 21));
                 lblEventsTitle.setText("No Loadshedding! :D");
                 lblEvent1.setText("");
@@ -1610,6 +1663,9 @@ public class AutoShutdownGUI extends javax.swing.JFrame {
 
         } else {
             int error = schedule.getInt("error");
+            if (error == -1) {
+                return;
+            }
             showDialog("API Status", "API Status", error + " - " + HTTP.get(error), MSG_ERR, 6000);
         }
     }
@@ -1739,15 +1795,14 @@ public class AutoShutdownGUI extends javax.swing.JFrame {
     private javax.swing.JButton btnCancelSettings;
     private static javax.swing.JButton btnKillSwitch;
     private javax.swing.JButton btnProjectLink;
-    private static javax.swing.JComboBox<String> cboTimeSelector;
     private static javax.swing.JCheckBox chbRunOnStart;
     private static javax.swing.JCheckBox chbStartMin;
+    private static javax.swing.JComboBox<String> cmbTimeSelector;
     private javax.swing.JDialog dlgAreaSearch;
     private static javax.swing.JDialog dlgGeneral;
     private static javax.swing.JDialog dlgInputDialog;
     private static javax.swing.JDialog dlgInsertToken;
     private static javax.swing.JDialog dlgSettingsMenu;
-    private javax.swing.JPanel jPanel1;
     private javax.swing.JLabel lblAboutHeader;
     private javax.swing.JLabel lblAreaSearchBarTitle;
     private static javax.swing.JLabel lblCountdown;
@@ -1772,6 +1827,7 @@ public class AutoShutdownGUI extends javax.swing.JFrame {
     private javax.swing.JMenu mnuSettings;
     private javax.swing.JPanel pnlCenterButtons;
     private javax.swing.JPanel pnlEventsPanel;
+    private javax.swing.JPanel pnlGeneralDlgText;
     private javax.swing.JTextField txfAreaSearchBar;
     private javax.swing.JTextField txfEnterTokenField;
     private static javax.swing.JTextField txfInputDialog;

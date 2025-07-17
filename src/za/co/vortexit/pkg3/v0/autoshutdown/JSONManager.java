@@ -147,7 +147,11 @@ public class JSONManager {
 
     public LocalTime getTime(String key) {
         if (jsonObject.has(key)) {
-            return jsonObject.get(key).asText().length() > 0 ? LocalTime.parse(jsonObject.get(key).asText()) : null;
+            String time = jsonObject.get(key).asText();
+            if (!time.equals("null") && !time.isBlank()) {
+                return LocalTime.parse(time);
+            }
+            return null;
         } else
             return null;
     }
@@ -217,14 +221,9 @@ public class JSONManager {
         return this.jsonObject.has(key);
     }
 
-    /**
-     * Returns a string representation of the JSON object.
-     * 
-     * @return a string representation of the JSON object.
-     */
     @Override
     public String toString() {
-        return jsonObject.asText();
+        return "JSONManager [jsonObject=" + jsonObject + ", file=" + file + "]";
     }
 
     /**

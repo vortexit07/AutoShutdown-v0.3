@@ -85,69 +85,81 @@ public class APIManager {
      * @throws JsonProcessingException if there is an error processing the JSON
      *                                 response
      */
-    // TODO: Remove test parameter before shipping to production
     public JsonNode getSchedule() throws JsonMappingException, JsonProcessingException, HttpTimeoutException {
-        HttpResponse<String> response = Unirest.get(
-                "https://developer.sepush.co.za/business/2.0/area?id=" + this.areaID + "&test=current")
-                // "https://developer.sepush.co.za/business/2.0/area?id=" + this.areaID)
-                .header("Token", TOKEN)
-                .asString();
+        if (this.areaID != null && this.areaID.length() > 0 && !this.areaID.isBlank()) {
 
-        if (response.getStatus() == 200) {
-            JSONManager responseJSON = new JSONManager(response.getBody());
-            // JSONManager responseJSON = new JSONManager(customAPIString);
+            String url = "https://developer.sepush.co.za/business/2.0/area?id=" + this.areaID;
 
-            if (!responseJSON.get("events").isEmpty() && responseJSON.get("events").get(0).has("start")) {
-                String startTime, endTime, time1 = null, time2 = null, time3 = null, time4 = null;
-                boolean atMidnight = false;
-                int stageArray;
-                LocalDate today = LocalDate.now();
-                LocalDate tomorrow = LocalDate.now().plusDays(1);
+            // Uncomment the line below for testing purposes
+            // url += "&test=current";
 
-                int stage = Character
-                        .getNumericValue(responseJSON.getJsonArray("events").get(0).get("note").asText().charAt(6));
-                stageArray = stage - 1;
+            HttpResponse<String> response = Unirest.get(
+                    url)
+                    .header("Token", TOKEN)
+                    .asString();
 
-                // startTime = "18:00";
-                startTime = responseJSON.getJsonArray("events").get(0).get("start").asText().substring(11, 16);
-                endTime = responseJSON.getJsonArray("events").get(0).get("end").asText().substring(11, 16);
-                if (responseJSON.getJsonArray("schedule").get("days").get(0).get("date").asText()
-                        .equals(today.toString())) {
-                    JsonNode stagesArray = responseJSON.getJsonArray("schedule").get("days").get(0).get("stages");
+            if (response.getStatus() == 200) {
+                JSONManager responseJSON = new JSONManager(response.getBody());
 
-                    time1 = stagesArray.get(stageArray).has(0)
-                            ? stagesArray.get(stageArray).get(0).asText().substring(0, 5)
-                            : "";
-                    time2 = stagesArray.get(stageArray).has(1)
-                            ? stagesArray.get(stageArray).get(1).asText().substring(0, 5)
-                            : "";
-                    time3 = stagesArray.get(stageArray).has(2)
-                            ? stagesArray.get(stageArray).get(2).asText().substring(0, 5)
-                            : "";
-                    time4 = stagesArray.get(stageArray).has(3)
-                            ? stagesArray.get(stageArray).get(3).asText().substring(0, 5)
-                            : "";
-                }
+                JsonNode events = responseJSON.getJsonArray("events");
 
-                if (responseJSON.getJsonArray("schedule").get("days").get(1).get("date").asText()
-                        .equals(tomorrow.toString())) {
-                    if (responseJSON.getJsonArray("schedule").get("days").get(1).get("stages").get(stageArray).get(0)
-                            .asText()
-                            .substring(0, 5).equals("00:00")) {
-                        atMidnight = true;
+                if (!events.isEmpty() && events.get(0).has("start")) {
+                    String startTime, endTime, time1 = "", time2 = "", time3 = "", time4 = "";
+                    boolean atMidnight = false;
+                    int stageArrayIndex;
+                    LocalDate today = LocalDate.now();
+                    LocalDate tomorrow = today.plusDays(1);
+
+                    int stage = Character
+                            .getNumericValue(responseJSON.getJsonArray("events").get(0).get("note").asText().charAt(6));
+                    stageArrayIndex = stage - 1;
+
+                    startTime = responseJSON.getJsonArray("events").get(0).get("start").asText().substring(11, 16);
+                    endTime = responseJSON.getJsonArray("events").get(0).get("end").asText().substring(11, 16);
+
+                    JsonNode scheduleDays = responseJSON.getJsonArray("schedule").get("days");
+                    int i = 0;
+                    for (JsonNode day : scheduleDays) {
+                        if (day.get("date").asText().equals(today.toString())) {
+                            JsonNode stagesArray = day.get("stages");
+
+                            if (stagesArray.has(stageArrayIndex)) {
+                                JsonNode stageTimes = stagesArray.get(stageArrayIndex);
+                                time1 = stageTimes.has(0) ? stageTimes.get(0).asText().substring(0, 5) : "";
+                                time2 = stageTimes.has(1) ? stageTimes.get(1).asText().substring(0, 5) : "";
+                                time3 = stageTimes.has(2) ? stageTimes.get(2).asText().substring(0, 5) : "";
+                                time4 = stageTimes.has(3) ? stageTimes.get(3).asText().substring(0, 5) : "";
+                            }
+                        }
+
+                        if (day.get("date").asText().equals(tomorrow.toString())) {
+                            JsonNode stagesArray = day.get("stages");
+                            if (stagesArray.has(stageArrayIndex) && stagesArray.get(stageArrayIndex).has(0)) {
+                                String firstTime = stagesArray.get(stageArrayIndex).get(0).asText().substring(0, 5);
+                                if (firstTime.equals("00:00")) {
+                                    atMidnight = true;
+                                }
+                            }
+                        }
+
+                        i++;
+                        if (i > 1)
+                            break; // Only need to check today and tomorrow
                     }
+
+                    String jsonString = String.format(
+                            "{\"stage\": %d, \"startTime\": \"%s\", \"endTime\": \"%s\", \"time1\": \"%s\", \"time2\": \"%s\", \"time3\": \"%s\", \"time4\": \"%s\", \"atMidnight\": %b}",
+                            stage, startTime, endTime, time1, time2, time3, time4, atMidnight);
+
+                    return new ObjectMapper().readTree(jsonString);
+                } else {
+                    return new ObjectMapper().readTree("{\"stage\" : 0}");
                 }
-
-                String jsonString = String.format(
-                        "{\"stage\": %d, \"startTime\": \"%s\", \"endTime\": \"%s\", \"time1\": \"%s\", \"time2\": \"%s\", \"time3\": \"%s\", \"time4\": \"%s\", \"atMidnight\": %b}",
-                        stage, startTime, endTime, time1, time2, time3, time4, atMidnight);
-
-                return new ObjectMapper().readTree(jsonString);
             } else {
-                return new ObjectMapper().readTree("{\"stage\" : 0}");
+                return new ObjectMapper().readTree("{\"error\" : \"" + response.getStatus() + "\"}");
             }
         } else {
-            return new ObjectMapper().readTree("{\"error\" : \"" + response.getStatus() + "\"}");
+            return new ObjectMapper().readTree("{\"error\" : -1}");
         }
     }
 
