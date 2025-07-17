@@ -1429,7 +1429,11 @@ public class AutoShutdownGUI extends javax.swing.JFrame {
 
                     switch (os) {
                         case 1: // Windows
-                            // shutdownWindows();
+                            try {
+                                shutdownWindows();
+                            } catch (IOException | InterruptedException e) {
+                                e.printStackTrace();
+                            }
                             break;
                         case 2: // Linux/Unix
                             try {
