@@ -440,4 +440,26 @@ public class JSONManager {
     public JsonNode getJsonArray(int index) {
         return jsonObject.has(index) ? jsonObject.get(index) : null;
     }
+
+    /**
+     * Returns the string value associated with the given key, or a default value if
+     * the key
+     * is not present or the value is null or empty.
+     *
+     * @param key          The key to look up in the JSON object.
+     * @param defaultValue The value to return if the key does not exist or the
+     *                     associated
+     *                     value is null or an empty string.
+     * @return The non-empty string value associated with the key, or
+     *         {@code defaultValue} if
+     *         the key is missing, the value is null, or the value is empty.
+     */
+    public String optString(String key, String defaultValue) {
+        if (has(key)) {
+            String value = getString(key);
+            return value != null && !value.isEmpty() ? value : defaultValue;
+        }
+        return defaultValue;
+    }
+
 }

@@ -1,29 +1,33 @@
 package za.co.vortexit.pkg3.v0.autoshutdown;
 
 import java.io.*;
+import java.net.URLDecoder;
 import java.nio.file.*;
 
 /**
- * The {@code StartupManager} class provides functionality to enable or disable
- * an application
- * to run on system startup for both Windows and Linux platforms.
+ * The {@code StartupManager} class provides platform-specific functionality to enable or disable
+ * an application to run automatically on system startup for both Windows and Linux systems.
  * <p>
- * This class supports creating and deleting startup entries in:
+ * Startup entries are managed as:
  * <ul>
- * <li>Windows Startup folder using symbolic links</li>
- * <li>Linux autostart directory with .desktop files</li>
+ *   <li>Symbolic links in the Windows Startup folder</li>
+ *   <li>.desktop files in the Linux autostart directory</li>
  * </ul>
- * It uses platform-specific methods to manage these startup configurations.
+ * <p>
+ * This utility assumes the application is distributed as a JAR or EXE and resides in a known executable path.
+ * It uses command-line tools to execute privileged actions when necessary (e.g., creating symbolic links on Windows).
+ * 
  * @author Connor Lewis
  */
 public class StartupManager {
 
     /**
-     * Enables the application to run on system startup (Windows).
+     * Enables the application to run at system startup on Windows by creating a symbolic link
+     * in the user's Startup folder.
      *
-     * @param appPath the absolute path of the application's executable file.
+     * @param appPath the absolute path of the application's executable.
      */
-    public static void enableStartupWindows(String appPath) {
+    private static void enableStartupWindows(String appPath) {
         String startupFolder = System.getenv("APPDATA") + "\\Microsoft\\Windows\\Start Menu\\Programs\\Startup";
         String shortcutName = new File(appPath).getName() + ".lnk";
         String shortcutPath = startupFolder + "\\" + shortcutName;
@@ -37,11 +41,12 @@ public class StartupManager {
     }
 
     /**
-     * Disables the application from running on system startup (Windows).
+     * Disables the application's automatic startup on Windows by deleting its shortcut
+     * from the Startup folder.
      *
-     * @param appPath the absolute path of the application's executable file.
+     * @param appPath the absolute path of the application's executable.
      */
-    public static void disableStartupWindows(String appPath) {
+    private static void disableStartupWindows(String appPath) {
         String startupFolder = System.getenv("APPDATA") + "\\Microsoft\\Windows\\Start Menu\\Programs\\Startup";
         String shortcutName = new File(appPath).getName() + ".lnk";
         String shortcutPath = startupFolder + "\\" + shortcutName;
@@ -55,12 +60,12 @@ public class StartupManager {
     }
 
     /**
-     * Creates a symbolic link (Windows) to enable application startup.
+     * Creates a symbolic link to the target executable in the specified location (Windows only).
      *
      * @param saveShortcutAs   the path to save the shortcut.
-     * @param targetOfShortcut the target executable file path.
+     * @param targetOfShortcut the full path to the executable file.
      * @throws IOException          if an I/O error occurs.
-     * @throws InterruptedException if the process execution is interrupted.
+     * @throws InterruptedException if the command execution is interrupted.
      */
     private static void createSymbolicLink(String saveShortcutAs, String targetOfShortcut)
             throws IOException, InterruptedException {
@@ -69,11 +74,11 @@ public class StartupManager {
     }
 
     /**
-     * Deletes a symbolic link (Windows) to disable application startup.
+     * Deletes a symbolic link from the specified path (Windows only).
      *
-     * @param linkPath the path of the shortcut to delete.
+     * @param linkPath the path to the symbolic link to delete.
      * @throws IOException          if an I/O error occurs.
-     * @throws InterruptedException if the process execution is interrupted.
+     * @throws InterruptedException if the command execution is interrupted.
      */
     private static void deleteSymbolicLink(String linkPath) throws IOException, InterruptedException {
         String command = String.format("cmd /c del \"%s\"", linkPath);
@@ -81,11 +86,11 @@ public class StartupManager {
     }
 
     /**
-     * Executes a command with administrative privileges.
+     * Executes a command as administrator (Windows).
      *
-     * @param command the command to execute.
+     * @param command the command to run.
      * @throws IOException          if an I/O error occurs.
-     * @throws InterruptedException if the process execution is interrupted.
+     * @throws InterruptedException if the command execution is interrupted.
      */
     private static void runAsAdmin(String command) throws IOException, InterruptedException {
         String script = String.format("powershell -Command \"Start-Process cmd -ArgumentList '/c %s' -Verb runAs\"",
@@ -96,11 +101,12 @@ public class StartupManager {
     }
 
     /**
-     * Enables the application to run on system startup (Linux).
+     * Enables the application to run at system startup on Linux by creating a .desktop file
+     * in the autostart directory.
      *
-     * @param appPath the absolute path of the application's executable file.
+     * @param appPath the absolute path of the application's executable.
      */
-    public static void enableStartupLinux(String appPath) {
+    private static void enableStartupLinux(String appPath) {
         String autostartFolder = System.getProperty("user.home") + "/.config/autostart";
         String desktopFileName = new File(appPath).getName() + ".desktop";
         String desktopFilePath = autostartFolder + "/" + desktopFileName;
@@ -114,11 +120,12 @@ public class StartupManager {
     }
 
     /**
-     * Disables the application from running on system startup (Linux).
+     * Disables the application's automatic startup on Linux by deleting its .desktop file
+     * from the autostart directory.
      *
-     * @param appPath the absolute path of the application's executable file.
+     * @param appPath the absolute path of the application's executable.
      */
-    public static void disableStartupLinux(String appPath) {
+    private static void disableStartupLinux(String appPath) {
         String autostartFolder = System.getProperty("user.home") + "/.config/autostart";
         String desktopFileName = new File(appPath).getName() + ".desktop";
         String desktopFilePath = autostartFolder + "/" + desktopFileName;
@@ -132,11 +139,11 @@ public class StartupManager {
     }
 
     /**
-     * Creates a .desktop file for Linux autostart functionality.
+     * Creates a .desktop entry in the Linux autostart directory for the application.
      *
-     * @param targetPath      the path to the application's executable.
-     * @param desktopFilePath the path to save the .desktop file.
-     * @throws IOException if an I/O error occurs.
+     * @param targetPath      the full path to the executable.
+     * @param desktopFilePath the full path where the .desktop file will be saved.
+     * @throws IOException if file creation fails.
      */
     private static void createDesktopFile(String targetPath, String desktopFilePath) throws IOException {
         String desktopFileContent = "[Desktop Entry]\n" +
@@ -159,13 +166,62 @@ public class StartupManager {
     }
 
     /**
-     * Deletes a .desktop file to disable Linux autostart functionality.
+     * Deletes a Linux .desktop file that starts the app on login.
      *
-     * @param desktopFilePath the path of the .desktop file to delete.
-     * @throws IOException if an I/O error occurs.
+     * @param desktopFilePath the full path to the .desktop file to delete.
+     * @throws IOException if deletion fails.
      */
     private static void deleteDesktopFile(String desktopFilePath) throws IOException {
         Path desktopFile = Paths.get(desktopFilePath);
         Files.deleteIfExists(desktopFile);
+    }
+
+    /**
+     * Enables or disables autostart functionality for Linux.
+     * This public wrapper resolves the app's executable path and delegates to platform logic.
+     *
+     * @param ROS true to enable run on startup; false to disable.
+     * @throws UnsupportedEncodingException if the path decoding fails.
+     */
+    public static void unixROS(boolean ROS) throws UnsupportedEncodingException {
+        if (ROS) {
+            enableStartupLinux(getExecutablePath().toString());
+        } else {
+            disableStartupLinux(getExecutablePath().toString());
+        }
+    }
+
+    /**
+     * Enables or disables autostart functionality for Windows.
+     * This public wrapper resolves the app's executable path and delegates to platform logic.
+     *
+     * @param ROS true to enable run on startup; false to disable.
+     * @throws UnsupportedEncodingException if the path decoding fails.
+     */
+    public static void windowsROS(boolean ROS) throws UnsupportedEncodingException {
+        if (ROS) {
+            enableStartupWindows(getExecutablePath().toString());
+        } else {
+            disableStartupWindows(getExecutablePath().toString());
+        }
+    }
+
+    /**
+     * Retrieves the absolute path of the currently running JAR or class file.
+     * This path is used to create autostart entries.
+     *
+     * @return the path to the running application's executable (JAR/EXE).
+     * @throws UnsupportedEncodingException if UTF-8 decoding fails.
+     */
+    private static Path getExecutablePath() throws UnsupportedEncodingException {
+        String path = AutoShutdownGUI.class.getProtectionDomain().getCodeSource().getLocation().getPath();
+        String decodedPath = URLDecoder.decode(path, "UTF-8");
+
+        // On Windows, remove leading '/' from path if present
+        if (decodedPath.startsWith("/") && System.getProperty("os.name").toLowerCase().contains("win")) {
+            decodedPath = decodedPath.substring(1);
+        }
+
+        return Paths.get(decodedPath);
     }
 }

@@ -13,7 +13,7 @@
   <stayAlive>true</stayAlive>
   <restartOnCrash>true</restartOnCrash>
   <manifest></manifest>
-  <icon>C:\Users\conno\Downloads\auto-shutdown.ico</icon>
+  <icon>C:\Users\conno\Desktop\Auto Shutdown\assets\icon.ico</icon>
   <singleInstance>
     <mutexName>autoshutdown.exe</mutexName>
     <windowTitle></windowTitle>
@@ -37,10 +37,10 @@
   <versionInfo>
     <fileVersion>1.0.0.0</fileVersion>
     <txtFileVersion>1.0</txtFileVersion>
-    <fileDescription>Auto Shutdown ver. 0.3.0</fileDescription>
+    <fileDescription>Auto Shutdown ver. 0.3.1</fileDescription>
     <copyright>Vortex IT Solutions</copyright>
-    <productVersion>0.3.0.0</productVersion>
-    <txtProductVersion>v0.3</txtProductVersion>
+    <productVersion>0.3.1.0</productVersion>
+    <txtProductVersion>v0.3.1</txtProductVersion>
     <productName>Auto Shutdown</productName>
     <companyName>Vortex IT Solutions</companyName>
     <internalName>autoshutdown</internalName>
