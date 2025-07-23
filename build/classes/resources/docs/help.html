@@ -143,15 +143,25 @@
       <h1>Auto Shutdown Help Documentation</h1>
 
       <h2>Getting a License Key</h2>
+      <p>
+        To use Auto Shutdown, you need a valid license key from the
+        <a href="https://eskomsepush.gumroad.com/l/api" target="_blank"
+          >EskomSePush API</a
+        >.
+        <br />
+        You’ll be prompted to enter this key the first time you search for an
+        area. The key is free for personal use and only needs to be obtained
+        once. Follow these steps to get your key:
+      </p>
       <ol>
         <li>
           Visit the
           <a href="https://eskomsepush.gumroad.com/l/api" target="_blank"
-            >EskomSePush API Page</a
+            >EskomSePush API page</a
           >.
         </li>
-        <li>Select the free plan.</li>
-        <li>Complete the subscription (you won't be charged).</li>
+        <li>Select the free plan (under the "Monthly" payment option).</li>
+        <li>Complete the subscription process (you won’t be charged).</li>
         <li>
           Copy your license key (format:
           <code>XXXXXXXX-XXXXXXXX-XXXXXXXX-XXXXXXXX</code>).
@@ -164,7 +174,7 @@
         <div>
           <section class="feature">
             <h3>1. Power Button</h3>
-            <p>Toggles the functionality of the program:</p>
+            <p>Toggles the program on or off:</p>
             <div class="highlight-box green-box">Green: Enabled</div>
             <div class="highlight-box red-box">Red: Disabled</div>
           </section>
@@ -172,32 +182,33 @@
           <section class="feature">
             <h3>2. Area Selection</h3>
             <p>
-              Shows the current selected area. Click on it to search for a new
-              area.
+              Displays the currently selected area. Click to search for a new
+              one. (Use the same area name format as in the ESP mobile app, e.g.
+              "Sandbaai (6)".)
             </p>
           </section>
 
           <section class="feature">
             <h3>3. Upcoming Events</h3>
             <p>
-              Displays the next loadshedding time and updates automatically
-              based on the selected area.
+              Shows the next scheduled loadshedding time. This updates
+              automatically based on the selected area.
             </p>
           </section>
 
           <section class="feature">
             <h3>4. Shutdown Timing</h3>
             <p>
-              Choose how long before loadshedding starts to shut down your
-              system. Select a preset or enter a custom time in minutes.
+              Choose how long before loadshedding starts your system should shut
+              down. You can select a preset or enter a custom time (in minutes).
             </p>
           </section>
 
           <section class="feature">
             <h3>5. Next Shutdown</h3>
             <p>
-              Shows the calculated shutdown time based on your timer settings
-              and the upcoming loadshedding event.
+              Displays the exact time your system will shut down based on your
+              selected timing and the upcoming loadshedding event.
             </p>
           </section>
         </div>
@@ -219,31 +230,42 @@
         <tbody>
           <tr>
             <td>403</td>
-            <td>Not Authenticated (Invalid or Disabled Token)</td>
+            <td>Not Authenticated (Invalid or disabled token)</td>
           </tr>
           <tr>
             <td>404</td>
-            <td>Not Found (Area or Event Missing)</td>
+            <td>Not Found (Area or event not available)</td>
           </tr>
           <tr>
             <td>408</td>
-            <td>Request Timeout (Try Again Later)</td>
+            <td>Request Timeout (Try again later)</td>
           </tr>
           <tr>
             <td>429</td>
-            <td>Too Many Requests (API Quota Exceeded)</td>
+            <td>Too Many Requests (API quota exceeded)</td>
           </tr>
           <tr>
             <td>5xx</td>
-            <td>Server-side Error (Contact Support)</td>
+            <td>
+              Server-side Error (Please
+              <a
+                href="#"
+                onclick="window.open('mailto:support@example.com?subject=ESP%20API%202.0%20Error%20Code%205xx', '_blank'); return false;"
+                >contact ESP support</a
+              >)
+            </td>
           </tr>
         </tbody>
       </table>
 
       <h2>Need More Help?</h2>
       <p>
-        If you encounter any issues, visit our
-        <a href="https://www.projects.vortexit.co.za/projects/auto-shutdown" target="_blank">support page</a>.
+        If you run into issues, visit our
+        <a
+          href="https://www.projects.vortexit.co.za/projects/auto-shutdown"
+          target="_blank"
+          >support page</a
+        >.
       </p>
     </div>
   </body>

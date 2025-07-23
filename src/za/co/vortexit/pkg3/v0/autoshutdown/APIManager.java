@@ -53,7 +53,7 @@ public class APIManager {
     }
 
     /**
-     * Gets the API token.
+     * Gets the API token from the settings file.
      * 
      * @return the API token
      */
@@ -91,7 +91,7 @@ public class APIManager {
             String url = "https://developer.sepush.co.za/business/2.0/area?id=" + this.areaID;
 
             // TODO: Uncomment the line below for testing purposes
-            // url += "&test=current";
+            url += "&test=current";
 
             HttpResponse<String> response = Unirest.get(
                     url)
@@ -161,6 +161,27 @@ public class APIManager {
         } else {
             return new ObjectMapper().readTree("{\"error\" : -1}");
         }
+    }
+
+    public static boolean isTokenValid(String token) throws IOException {
+        HttpResponse<String> response = Unirest.get(
+                "https://developer.sepush.co.za/business/2.0/area?id=eskde-6-onrusoverstrandwesterncape&test=current")
+                .header("Token", token)
+                .asString();
+
+        int statusCode = response.getStatus();
+
+        switch (statusCode) {
+            case 200:
+                return true;
+
+            case 429:
+                return true;
+
+            default:
+                return false;
+        }
+
     }
 
     /**

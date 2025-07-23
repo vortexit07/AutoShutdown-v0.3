@@ -1,12 +1,24 @@
 package za.co.vortexit.pkg3.v0.autoshutdown;
 
+import java.awt.AWTException;
+import java.awt.Image;
+import java.io.IOException;
+
+import javax.swing.ImageIcon;
+
 /**
- * Manages the display of various types of dialogs (e.g., error, warning, normal) 
- * within the AutoShutdown GUI. Supports modal and non-modal dialogs, as well as 
+ * Manages the display of various types of dialogs (e.g., error, warning,
+ * normal)
+ * within the AutoShutdown GUI. Supports modal and non-modal dialogs, as well as
  * timed and input dialogs.
  */
-public class CustomDialogManager {
-    
+public class CustomDialogManager extends AutoShutdownGUI {
+
+    public CustomDialogManager() throws IOException, AWTException {
+        super();
+        initIcons();
+    }
+
     /** Message type for a normal/info dialog */
     public static final String MSG_NORM = "NORMAL";
 
@@ -16,33 +28,30 @@ public class CustomDialogManager {
     /** Message type for a warning dialog */
     public static final String MSG_WARN = "WARNING";
 
-    private javax.swing.ImageIcon scaledWarnPic;
-    private javax.swing.ImageIcon scaledErrorPic;
-    private javax.swing.ImageIcon scaledInfoPic;
-
-    private AutoShutdownGUI parent;
+    private static javax.swing.ImageIcon scaledWarnPic;
+    private static javax.swing.ImageIcon scaledErrorPic;
+    private static javax.swing.ImageIcon scaledInfoPic;
 
     /**
      * Initializes icon resources from the resources folder.
      * These icons correspond to the message types supported by this class.
      */
     private void initIcons() {
-        scaledWarnPic = new javax.swing.ImageIcon(
-                AutoShutdownGUI.class.getResource("/resources/images/warn.png"));
-        scaledErrorPic = new javax.swing.ImageIcon(
-                AutoShutdownGUI.class.getResource("/resources/images/error.png"));
-        scaledInfoPic = new javax.swing.ImageIcon(
-                AutoShutdownGUI.class.getResource("/resources/images/info.png"));
+        scaledWarnPic = loadScaledIcon("/resources/images/warn.png", 45, 45);
+        scaledErrorPic = loadScaledIcon("/resources/images/error.png", 45, 45);
+        scaledInfoPic = loadScaledIcon("/resources/images/info.png", 45, 45);
     }
 
-    /**
-     * Constructs a CustomDialogManager for the given GUI.
-     *
-     * @param parent the parent GUI that owns the dialog components.
-     */
-    public CustomDialogManager(AutoShutdownGUI parent) {
-        this.parent = parent;
-        initIcons();
+    private ImageIcon loadScaledIcon(String resourcePath, int width, int height) {
+        java.net.URL imgURL = AutoShutdownGUI.class.getResource(resourcePath);
+        if (imgURL != null) {
+            ImageIcon originalIcon = new ImageIcon(imgURL);
+            Image scaledImage = originalIcon.getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH);
+            return new ImageIcon(scaledImage);
+        } else {
+            System.err.println("Couldn't find file: " + resourcePath);
+            return null;
+        }
     }
 
     /**
@@ -54,81 +63,90 @@ public class CustomDialogManager {
      * @param title      the title of the dialog window.
      * @param msgHeading the heading shown in the dialog.
      * @param message    the content of the message.
-     * @param type       the dialog type: {@code "ERROR"}, {@code "NORMAL"}, or {@code "WARNING"}.
+     * @param type       the dialog type: {@code "ERROR"}, {@code "NORMAL"}, or
+     *                   {@code "WARNING"}.
      */
-    public void showDialog(String title, String msgHeading, String message, String type) {
+    public static void showDialog(String title, String msgHeading, String message, String type) {
         new Thread(() -> {
-            parent.dlgGeneral.setTitle(title);
-            parent.lblDialogTitle.setText(msgHeading);
-            parent.lblDialogMsg.setText(message);
+            dlgGeneral.setTitle(title);
+            dlgGeneral.setLocationRelativeTo(dlgGeneral.getParent());
+            lblDialogTitle.setText(msgHeading);
+            lblDialogMsg.setText("<html>" + message + "</html>");
 
             // Set appropriate icon based on dialog type
             switch (type) {
-                case MSG_ERR -> parent.lblDialogImg.setIcon(scaledErrorPic);
-                case MSG_NORM -> parent.lblDialogImg.setIcon(scaledInfoPic);
-                case MSG_WARN -> parent.lblDialogImg.setIcon(scaledWarnPic);
-                default -> parent.lblDialogImg.setIcon(scaledInfoPic);
+                case MSG_ERR -> lblDialogImg.setIcon(scaledErrorPic);
+                case MSG_NORM -> lblDialogImg.setIcon(scaledInfoPic);
+                case MSG_WARN -> lblDialogImg.setIcon(scaledWarnPic);
+                default -> lblDialogImg.setIcon(scaledInfoPic);
             }
 
-            parent.dlgGeneral.setVisible(true);
+            dlgGeneral.setVisible(true);
         }).start();
     }
 
     /**
-     * Displays a dialog with the specified parameters, optionally running on the main thread.
+     * Displays a dialog with the specified parameters, optionally running on the
+     * main thread.
      * <p>
-     * If {@code runOnMainThread} is true, the dialog is shown synchronously; 
+     * If {@code runOnMainThread} is true, the dialog is shown synchronously;
      * otherwise, it is shown asynchronously on a new thread.
      *
      * @param title           the dialog title.
      * @param msgHeading      the dialog heading text.
      * @param message         the main message content.
-     * @param type            the dialog type: {@code "ERROR"}, {@code "NORMAL"}, or {@code "WARNING"}.
-     * @param runOnMainThread if true, dialog shows on the main thread and blocks execution.
+     * @param type            the dialog type: {@code "ERROR"}, {@code "NORMAL"}, or
+     *                        {@code "WARNING"}.
+     * @param runOnMainThread if true, dialog shows on the main thread and blocks
+     *                        execution.
      */
-    public void showDialog(String title, String msgHeading, String message, String type, boolean runOnMainThread) {
+    public static void showDialog(String title, String msgHeading, String message, String type,
+            boolean runOnMainThread) {
         if (runOnMainThread) {
-            parent.dlgGeneral.setTitle(title);
-            parent.lblDialogTitle.setText(msgHeading);
-            parent.lblDialogMsg.setText(message);
+            dlgGeneral.setTitle(title);
+            dlgGeneral.setLocationRelativeTo(dlgGeneral.getParent());
+            lblDialogTitle.setText(msgHeading);
+            lblDialogMsg.setText("<html>" + message + "</html>");
 
             switch (type) {
-                case MSG_ERR -> parent.lblDialogImg.setIcon(scaledErrorPic);
-                case MSG_NORM -> parent.lblDialogImg.setIcon(scaledInfoPic);
-                case MSG_WARN -> parent.lblDialogImg.setIcon(scaledWarnPic);
-                default -> parent.lblDialogImg.setIcon(scaledInfoPic);
+                case MSG_ERR -> lblDialogImg.setIcon(scaledErrorPic);
+                case MSG_NORM -> lblDialogImg.setIcon(scaledInfoPic);
+                case MSG_WARN -> lblDialogImg.setIcon(scaledWarnPic);
+                default -> lblDialogImg.setIcon(scaledInfoPic);
             }
 
-            parent.dlgGeneral.setVisible(true);
+            dlgGeneral.setVisible(true);
         } else {
             showDialog(title, msgHeading, message, type);
         }
     }
 
     /**
-     * Displays a non-blocking dialog with a timeout, automatically dismissing it 
+     * Displays a non-blocking dialog with a timeout, automatically dismissing it
      * after the specified number of milliseconds.
      *
      * @param title            the dialog title.
      * @param msgHeading       the heading text displayed in the dialog.
      * @param message          the content of the dialog.
-     * @param type             the dialog type: {@code "ERROR"}, {@code "NORMAL"}, or {@code "WARNING"}.
-     * @param dismissTimeMills how long (in milliseconds) to show the dialog before hiding it.
+     * @param type             the dialog type: {@code "ERROR"}, {@code "NORMAL"},
+     *                         or {@code "WARNING"}.
+     * @param dismissTimeMills how long (in milliseconds) to show the dialog before
+     *                         hiding it.
      */
-    public void showDialog(String title, String msgHeading, String message, String type, int dismissTimeMills) {
+    public static void showDialog(String title, String msgHeading, String message, String type, int dismissTimeMills) {
         new Thread(() -> {
-            parent.dlgGeneral.setTitle(title);
-            parent.lblDialogTitle.setText(msgHeading);
-            parent.lblDialogMsg.setText(message);
+            dlgGeneral.setTitle(title);
+            lblDialogTitle.setText(msgHeading);
+            lblDialogMsg.setText("<html>" + message + "</html>");
 
             switch (type) {
-                case MSG_ERR -> parent.lblDialogImg.setIcon(scaledErrorPic);
-                case MSG_NORM -> parent.lblDialogImg.setIcon(scaledInfoPic);
-                case MSG_WARN -> parent.lblDialogImg.setIcon(scaledWarnPic);
-                default -> parent.lblDialogImg.setIcon(scaledInfoPic);
+                case MSG_ERR -> lblDialogImg.setIcon(scaledErrorPic);
+                case MSG_NORM -> lblDialogImg.setIcon(scaledInfoPic);
+                case MSG_WARN -> lblDialogImg.setIcon(scaledWarnPic);
+                default -> lblDialogImg.setIcon(scaledInfoPic);
             }
 
-            parent.dlgGeneral.setVisible(true);
+            dlgGeneral.setVisible(true);
 
             try {
                 Thread.sleep(dismissTimeMills);
@@ -136,25 +154,26 @@ public class CustomDialogManager {
                 Thread.currentThread().interrupt();
             }
 
-            if (parent.dlgGeneral.isVisible()) {
-                parent.dlgGeneral.setVisible(false);
+            if (dlgGeneral.isVisible()) {
+                dlgGeneral.setVisible(false);
             }
         }).start();
     }
 
     /**
-     * Displays a modal input dialog with a custom heading and returns the user's input.
+     * Displays a modal input dialog with a custom heading and returns the user's
+     * input.
      * <p>
      * This method blocks execution until the user submits or closes the dialog.
      *
      * @param heading the heading text shown in the input dialog.
      * @return the input string entered by the user; may be empty but never null.
      */
-    public String showInputDialog(String heading) {
-        parent.lblInputHeading.setText(heading);
-        parent.dlgInputDialog.setVisible(true);
-        String input = parent.txfInputDialog.getText();
-        parent.txfInputDialog.setText(""); // Clear for next input
+    public static String showInputDialog(String heading) {
+        lblInputHeading.setText(heading);
+        dlgInputDialog.setVisible(true);
+        String input = txfInputDialog.getText();
+        txfInputDialog.setText(""); // Clear for next input
         return input;
     }
 }

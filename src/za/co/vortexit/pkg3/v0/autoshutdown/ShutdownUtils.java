@@ -186,7 +186,8 @@ public class ShutdownUtils {
                 return secondsUntil;
             }
         }
-        return -1;
+        // If no shutdown times are specified, return -999 to indicate no shutdown scheduled
+        return -999;
     }
 
     /**
