@@ -91,7 +91,7 @@ public class APIManager {
             String url = "https://developer.sepush.co.za/business/2.0/area?id=" + this.areaID;
 
             // TODO: Uncomment the line below for testing purposes
-            url += "&test=current";
+            // url += "&test=current";
 
             HttpResponse<String> response = Unirest.get(
                     url)
